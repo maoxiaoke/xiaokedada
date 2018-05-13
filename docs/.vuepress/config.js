@@ -11,15 +11,14 @@ module.exports = {
   // theme: 'vue',
   themeConfig: {
     repo: 'maoxiaoke/xiaokedada',
-    repoLabel: '查看源码',
+    repoLabel: 'Github',
     editLinks: true,
     docsDir: 'docs',
-    editLinkText: 'Edit this page on GitHub',
-    lastUpdated: 'Last Updated',
+    editLinkText: '在 Github 上编辑此页',
+    lastUpdated: '上次更新',
     nav: [
       { text: 'JavaScript', link: '/JavaScript/' },
-      { text: 'FirstMeet系列', link: '/FirstMeet/' },
-      { text: 'Github', link: 'https://github.com/maoxiaoke' },
+      { text: 'FirstMeet系列', link: '/FirstMeet/' }
     ],
     sidebar: {
       '/JavaScript/': genSidebarJavaScript (),
