@@ -9,5 +9,8 @@
     "docs:build": "vuepress build docs"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "vuepress": "^0.8.4"
+  }
 }
