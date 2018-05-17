@@ -47,37 +47,32 @@ BFC(Block Formatting Context)，中文译成 “块级格式上下文”。标�
 
 以三栏布局为例:
 
-<p data-height="265" data-theme-id="light" data-slug-hash="KvQgKr" data-default-tab="css,result" data-user="maoxiake" data-embed-version="2" data-pen-title="KvQgKr" class="codepen">See the Pen <a href="https://codepen.io/maoxiake/pen/KvQgKr/">KvQgKr</a> by maoxiaoke (<a href="https://codepen.io/maoxiake">@maoxiake</a>) on <a href="https://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<CodepenTemplate hash="KvQgKr" title="KvQgKr" href="https://codepen.io/maoxiake/pen/KvQgKr/" />
 
 > 根据第三条，存在 float 元素，中间的元素仍然接触外容器的左边缘。注意后边那句话，*除非建立一个新的 BFC*。
 
 如何建立一个新的 BFC，从 BFC 的创建看，可以使用 `overflow: hidden` 创建一个 block boxes。
 
-<p data-height="265" data-theme-id="light" data-slug-hash="BdYLLx" data-default-tab="css,result" data-user="maoxiake" data-embed-version="2" data-pen-title="BdYLLx" class="codepen">See the Pen <a href="https://codepen.io/maoxiake/pen/BdYLLx/">BdYLLx</a> by maoxiaoke (<a href="https://codepen.io/maoxiake">@maoxiake</a>) on <a href="https://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<CodepenTemplate hash="BdYLLx" title="BdYLLx" href="https://codepen.io/maoxiake/pen/BdYLLx/" />
 
 ### 清除内部浮动
 
 这就是以前我常说 `overflow:hidden` 的怪异之处。
 
-<p data-height="265" data-theme-id="light" data-slug-hash="JypRJR" data-default-tab="css,result" data-user="maoxiake" data-embed-version="2" data-pen-title="JypRJR" class="codepen">See the Pen <a href="https://codepen.io/maoxiake/pen/JypRJR/">JypRJR</a> by maoxiaoke (<a href="https://codepen.io/maoxiake">@maoxiake</a>) on <a href="https://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<CodepenTemplate hash="JypRJR" title="JypRJR" href="https://codepen.io/maoxiake/pen/JypRJR/" />
 
 > 子元素使用浮动脱离了文档流，根据最后一条，我们给父元素添加 BFC 来包含 浮动元素的高度。
 
-<p data-height="265" data-theme-id="light" data-slug-hash="WEMGEL" data-default-tab="css,result" data-user="maoxiake" data-embed-version="2" data-pen-title="WEMGEL" class="codepen">See the Pen <a href="https://codepen.io/maoxiake/pen/WEMGEL/">WEMGEL</a> by maoxiaoke (<a href="https://codepen.io/maoxiake">@maoxiake</a>) on <a href="https://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<CodepenTemplate hash="WEMGEL" title="WEMGEL" href="https://codepen.io/maoxiake/pen/WEMGEL/" />
 
 ## 防止垂直 margin 重叠
 
-<p data-height="265" data-theme-id="light" data-slug-hash="eEVdym" data-default-tab="css,result" data-user="maoxiake" data-embed-version="2" data-pen-title="eEVdym" class="codepen">See the Pen <a href="https://codepen.io/maoxiake/pen/eEVdym/">eEVdym</a> by maoxiaoke (<a href="https://codepen.io/maoxiake">@maoxiake</a>) on <a href="https://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<CodepenTemplate hash="eEVdym" title="eEVdym" href="https://codepen.io/maoxiake/pen/eEVdym/" />
 
 > 这是因为 BFC 的 相邻两个 margin 的 collapse 塌陷造成的。(因为根元素会创建一个 BFC)。解决方法，为子元素创建一个新的 BFC，则满足 容器内的子元素不会影响到外面的元素。
 
-<p data-height="265" data-theme-id="light" data-slug-hash="vJdXRp" data-default-tab="css,result" data-user="maoxiake" data-embed-version="2" data-pen-title="vJdXRp" class="codepen">See the Pen <a href="https://codepen.io/maoxiake/pen/vJdXRp/">vJdXRp</a> by maoxiaoke (<a href="https://codepen.io/maoxiake">@maoxiake</a>) on <a href="https://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<CodepenTemplate hash="vJdXRp" title="vJdXRp" href="https://codepen.io/maoxiake/pen/vJdXRp/" />
 
 参考：
 + [BFC 神奇背后的原理](http://www.cnblogs.com/lhb25/p/inside-block-formatting-ontext.html)

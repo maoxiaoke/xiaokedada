@@ -20,12 +20,16 @@ module.exports = {
       { text: 'JavaScript', link: '/JavaScript/' },
       { text: 'FirstMeet系列', link: '/FirstMeet/' },
       { text: 'CSS', link: '/CSS/' },
+      { text: '读书笔记', link: '/ReadingNote/' },
+      { text: 'Resource', link: '/GatherAll/' },        
       
     ],
     sidebar: {
       '/JavaScript/': genSidebarJavaScript (),
       '/FirstMeet/': genSidebarFirstMeet ('Frist-Meet 系列'),
-      '/CSS/': genSidebarCSS ('层叠样式')
+      '/CSS/': genSidebarCSS ('层叠样式'),
+      '/ReadingNote/': genSidebarNote('读书笔记'),
+      '/GatherAll/': genSidebarAll('资源聚合')   
     }
   }
 }
@@ -34,29 +38,40 @@ module.exports = {
 function genSidebarJavaScript () {
   return [
     {
-      title: '基础内容',
-      collapsable: false,
-      children: [
-        'Async-Programming',
-      ]
-    },
-    {
-      title: 'ECMAScript 6',
+      title: 'Depth-in-Series',
       collapsable: false,
       children: [
         'Require-and-Import',
         'Property-Descriptors',        
-        'Small-and-Chunk-Code',        
-        'Async-Programming',        
         'Depth-in-ES6',
         'Depth-in-This',
         'Depth-in-Closure',
+        'Async-Programming',
+        'Prototype',        
+      ]
+    },
+    {
+      title: '基础内容',
+      collapsable: false,
+      children: [
+        'AJAX',        
+        'Coercion',
+        'Map-and-Reduce',
+      ]
+    },
+    {
+      title: 'DOM 相关',
+      collapsable: false,
+      children: [
         'DOM-Operation',
         'DOM-More',
-        'Coercion',
-        'Prototype',
-        'Map-and-Reduce',
-        'AJAX',
+      ]
+    },
+    {
+      title: 'Thinking-in-JavaScript',
+      collapsable: false,
+      children: [
+        'Small-and-Chunk-Code',
       ]
     }
   ]
@@ -90,6 +105,32 @@ function genSidebarCSS (title) {
         'Specialty',
         'Two-or-Three-Column',
         'CSS-ProTips'
+      ]
+    }
+  ]
+}
+
+// Reading Note
+function genSidebarNote (title) {
+  return [
+    {
+      title,
+      collapsable: false,
+      children: [
+        'Functional-JavaScript'
+      ]
+    }
+  ]
+}
+
+// Gather All
+function genSidebarAll (title) {
+  return [
+    {
+      title,
+      collapsable: false,
+      children: [
+        'Functional-JavaScript'
       ]
     }
   ]

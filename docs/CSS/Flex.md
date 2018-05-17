@@ -6,7 +6,6 @@
 
 它的主要思想是，让容器可以改变子元素(项目)的宽度和长度，从而充分地填充空间。一个弹性容器通过扩展子元素可以有效地填满自由空间，或者收缩它们以防止溢出。
 
-
 更重要的是，相对于常规布局(垂直方向的block布局和水平方向的inline布局)来说，弹性布局是方向无关的。虽然它们都表现不错，但是在大型和复杂项目中还是缺乏弹性(尤其是改变方向、重设大小、伸展、收缩等问题)。
 
 > Note: 弹性盒布局最适合应用组件或者小型布局，而[网格布局](https://css-tricks.com/snippets/css/complete-guide-grid/)(Grid)则是为大型布局设计的。
@@ -248,6 +247,4 @@ flex-basis
 
 > 译注: 对原文提供的examples有修改
 
-<p data-height="265" data-theme-id="light" data-slug-hash="LLvNyY" data-default-tab="html,result" data-user="maoxiake" data-embed-version="2" data-pen-title="a flex example" class="codepen">See the Pen <a href="https://codepen.io/maoxiake/pen/LLvNyY/">a flex example</a> by maoxiaoke (<a href="https://codepen.io/maoxiake">@maoxiake</a>) on <a href="https://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
-
+<CodepenTemplate hash="LLvNyY" title="a flex example" href="https://codepen.io/maoxiake/pen/LLvNyY/" />
