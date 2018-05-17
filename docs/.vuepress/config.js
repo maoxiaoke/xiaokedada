@@ -130,7 +130,6 @@ function genSidebarAll (title) {
       title,
       collapsable: false,
       children: [
-        'Functional-JavaScript'
       ]
     }
   ]
