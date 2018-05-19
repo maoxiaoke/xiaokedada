@@ -191,3 +191,248 @@ SVG 对所有分辨率设备都要很好的适配性，并且适配 IE9 及以�
   content: attr(aria-label);
 }
 ```
+
+## 使用 “迟钝的猫头鹰” 选择器
+
+这可能是个奇怪的名字，但是使用通用选择器(`*`) 结合兄弟选择器(`+`)可以提供强大的 CSS 能力。
+
+```css
+* + * {
+  margin-top: 1.5em;
+}
+```
+
+这个例子中，文档流中的紧接着一个元素之后的所有元素都会收到一个 `margin-top: 1.5rem`。
+
+更多参考，请阅读 [Heydon Pickering's post](http://alistapart.com/article/axiomatic-css-and-lobotomized-owls)
+
+## 为纯 CSS 滑块使用 max-height
+
+为单纯采用 CSS 实现的滑块采用 `max-height` 和 `overflow: hidden`。
+
+```css
+.slider {
+  max-height: 200px;
+  overflow-y: hidden;
+  width: 300px;
+}
+.slider:hover {
+  max-height: 600px;
+  overflow-y: scroll;
+}
+```
+
+元素 `hover` 时延展到 `max-height` 值，由于设置了 `overflow`，滑块就出现了。
+
+## 等宽单元格
+
+处理表格非常痛苦。尝试使用 `table-layout: fixed` 来保持单元格等宽。
+
+```css
+.calendar {
+  table-layout: fixed;
+}
+```
+
+“无痛的” 表格布局。
+
+[Demo](https://codepen.io/AllThingsSmitty/pen/jALALm)
+
+## “逃脱”弹性盒外边距的 Hacks
+
+当处理列的多余空间时，丢弃 `nth-`、`first-` 和 `last-child` 等 Hack 技术，使用弹性盒的 `space-between`。
+
+```css
+.list {
+  display: flex;
+  justify-content: space-between;
+}
+
+.list .person {
+  flex-basis: 23%;
+}
+```
+
+现在，列的多余空间会被均匀分配。
+
+## 使用属性选择器处理“空的”链接
+
+当 `<a>` 元素没有文本值但 `href` 属性有链接时，直接展示链接的方法：
+
+```css
+a[href^="http"]:empty::before {
+  content: attr(href);
+}
+```
+
+这非常方便。
+
+[Demo](https://codepen.io/AllThingsSmitty/pen/zBzXRx)
+
+## 为 “默认” 链接添加样式
+
+为 “默认” 的链接添加样式：
+
+```css
+a[href]:not([class]) {
+  color: #008000;
+  text-decoration: underline;
+}
+```
+
+通过 CMS 插入的链接通常没有 `class` 属性，上述方法可以不影响其他元素的情况下突出链接。
+
+## 统一的垂直结构
+
+在一个元素内使用通用选择器(`*`)来创建一致的垂直结构：
+
+```css
+.intro > * {
+  margin-bottom: 1.25rem;
+}
+```
+
+一致的垂直结构让内容更为已读，极具审美。
+
+## 内部比例盒
+
+为了创建一个内部比例盒，所需要的仅仅是为一个 `div` 增加一个上内边距或下内边距。
+
+```css
+.container
+  height: 0;
+  padding-bottom: 20%;
+  position: relative;
+}
+
+.container div {
+  border: 2px dashed #ddd;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+```
+
+使用 `20%` 使得盒子的高度等于其宽度的 `20%`。无论视口的宽度是多少，子 `div` 会保持 5:1 (100% / 20%) 的比例。
+
+## 为加载失败的图片添加样式
+
+使用一丁点的 CSS 让加载失败的图片更美观一点。
+
+```css
+img {
+  display: block;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  height: auto;
+  line-height: 2;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+```
+
+然后，添加伪元素规则来展示用户信息和加载失败的图片的 url。
+
+```css
+img::before {
+  content: "We're sorry, the image below is broken :(";
+  display: block;
+  margin-bottom: 10px;
+}
+
+img::after {
+  content: "(url: " attr(src) ")";
+  display: block;
+  font-size: 12px;
+}
+```
+
+在 [Ire Aderinokun](https://github.com/ireade/) 的[原文](http://bitsofco.de/styling-broken-images/)中了解更多。
+
+## 全局大小使用 rem，局部大小使用 em
+
+在根节点(`html { font-size: 100% }`)设置了基本的 `font-size` 后，使用 `em` 为其他文本元素设置 `font-size`：
+
+```css
+h2 {
+  font-size: 2em;
+}
+p {
+  font-size: 1em;
+}
+```
+
+然后使用 `rem` 为模块设置 `font-size`。
+
+```css
+article {
+  font-size: 1.25rem;
+}
+
+aside .module {
+  font-size: .9rem;
+}
+```
+
+现在，每个模块都变得条块分明，更容易书写样式，更易维护，更灵活。
+
+## 隐藏非静音的、自动播放的 video
+
+这是个用户自定义样式的小技巧。避免了当页面加载时，自动播放有声音的 video 来干扰用户。如果是非静音的，就不显示 video：
+
+```css
+video[autoplay]:not([muted]) {
+  display: none;
+}
+```
+
+再唠叨一次，我们很好地利用了 `:not()` 这个伪类。
+
+## 为灵活的类型使用 `:root`
+
+在响应式设计中，类型的 `font-size` 应该随视口大小进行调整。你可以使用 `:root` 并根据视口高度和宽度计算类型的 `font-size`。
+
+```css
+:root {
+  font-size: calc(1vw + 1vh + .5vmin);
+}
+```
+
+之后，你可以根据 `:root` 计算出来的值使用 `root` 的 `em` 单元。
+
+```css
+body {
+  font: 1rem/1.6 sans-serif;
+}
+```
+
+[Demo](https://codepen.io/AllThingsSmitty/pen/XKgOkR)
+
+## 为了更好的移动端体验，为表单元素使用 `font-size`
+
+当点击 `<select>` 下拉框时，为了避免移动浏览器在表单元素上进行的缩放，为表单选择器定义 `font-size` 规则：
+
+```css
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  font-size: 16px;
+}
+```
+
+## 使用指针事件来控制鼠标事件
+
+当点击一个元素时，[Pointer events](https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events) 允许自定义鼠标的行为。举个例子，为了 disabled 掉一个 `button` 的 Pointer events：
+
+```css
+.button-disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+```
+
+这很简单
