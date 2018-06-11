@@ -127,7 +127,7 @@ body {
 
 想要在任意情况任何地方垂直或水平居中元素内容，CSS-Tricks 网站上[有一篇非常好的文章](https://css-tricks.com/centering-css-complete-guide/)。
 
-> 译者注: 该文章已被译者翻译，[CSS 居中的完整教程](./CSS居中的完整教程[翻译].md)
+> 译者注: 该文章已被译者翻译，[CSS 居中的完整教程](./Center.md)
 > 
 > 注意，flex 盒在猪队友 IE11 上有一些[怪异的问题](https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items)。
 > 

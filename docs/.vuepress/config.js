@@ -85,7 +85,8 @@ function genSidebarFirstMeet (title) {
       collapsable: false,
       children: [
         'First-Meet-JSON',
-        'First-Meet-Cache'
+        'First-Meet-Cache',
+        'First-Meet-Vue-Communication'
       ]
     }
   ]
@@ -99,12 +100,13 @@ function genSidebarCSS (title) {
       collapsable: false,
       children: [
         'Flex',
+        'CSS-ProTips',        
         'Layout',
         'Center',
         'BFC',
         'Specialty',
         'Two-or-Three-Column',
-        'CSS-ProTips'
+        'Order-CSS-Properties'
       ]
     }
   ]
@@ -130,6 +132,10 @@ function genSidebarAll (title) {
       title,
       collapsable: false,
       children: [
+        'Reference',
+        'People-In-Konw',        
+        'Tools-Resource',
+        'Free-Book-Resources'
       ]
     }
   ]

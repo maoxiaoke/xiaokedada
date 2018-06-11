@@ -1487,6 +1487,17 @@ iterator.next() //{value: undefined, done: true}
 
 ### Generator 的异步操作
 
+---
+
+## Proxy 和 Reflection
+
+ES5 和 ES6 致力于为开发者提供 JavaScript 已有的但不可用的功能。
+
+::: tip
+在 ES5 之前，开发者不可以定义自己的不可枚举或不可枚举属性，为此 ES5 引入了 `Object.defineProperty()` 函数来支持开发者去做引擎早就可以实现的事情。
+:::
+
+ES6 添加了一些内建对象，赋予开发者更多访问 JavaScript 引擎的能力。*Proxy* 是一种可以拦截并改变底层 JavaScript 引擎操作的包装器，底层操作被拦截后会触发响应特定操作的陷阱函数。*Reflection API* 以 *Reflect* 对象的形式出现，对象中方法的默认特性与相同底层操作一致，而 *Proxy* 则覆盖这些操作。每个代理陷阱对应一个命名和参数都相同的 *Reflect* 方法。
 
 ---
 
