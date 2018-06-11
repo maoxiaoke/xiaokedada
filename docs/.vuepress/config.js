@@ -106,7 +106,8 @@ function genSidebarCSS (title) {
         'BFC',
         'Specialty',
         'Two-or-Three-Column',
-        'Order-CSS-Properties'
+        'Order-CSS-Properties',
+        'CSS2.2'
       ]
     }
   ]
