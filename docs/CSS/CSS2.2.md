@@ -6,7 +6,8 @@
 - “元素” 对应于 "element"，通常指的是 HTML 的 TAG。
 - “属性” 对应于 "property"，而非 "attribute"。有些文章会为了区分 "property" 和 "attribute"，称呼前者为 “特性”，后者为 “属性”。对我而言，如果你遇到 “属性”，请替换成 "property"。
 - User Agent 通常指的就是 “浏览器”。
-- "specificity" 译成特指度。
+- "specificity" 译成“特指度”。
+- "visual formatting model" 翻译成“视觉格式模型”。
 :::
 
 ## 1 About the CSS 2.2 Specification
@@ -33,10 +34,26 @@
 
 `Element` 是诸如 `p`、`table` 和 `ol` 等的 DOM 元素。
 
-`Replaced element` 指的是内容超出 `CSS formatting model` 的某些元素。比如一张图片、嵌入式的文档和小程序。比如，`<img>` 元素经常被指定给 `src` 属性的图片所取代。**`Replaced element` 一般有固有尺寸：固有的宽、高和比例**(不过，User Agent 可能会有其他实现)。
+`Replaced element` 指的是内容(content)超出 `CSS formatting model` 的某些元素。也就是说，元素的内容不受当前文档样式的影响，内容是可替换的。这很好理解，因为元素的内容来自当前文档的外部。
+
+有哪些元素是可替换的的呢。这个问题可以换个提法，就是哪些元素的内容是*嵌入*的呢？我们可以参考 [HTML5 标准协议](https://www.w3.org/TR/html5/dom.html#embedded-content-2)
+
+> Embedded content is content that imports another resource into the document, or content from another vocabulary that is inserted into the document.
+
+标准还给出了内容是嵌入式的元素。`<img>`、`<canvas>`、`<audio>`、`<embed>`、`<math>`、`<object>`、`<picture>`、`<svg>`、`<video>`。
+
+比如一张图片、嵌入式的文档和小程序。比如，`<img>` 元素经常被指定给 `src` 属性的图片所取代。**`Replaced element` 一般有固有尺寸：固有的宽、高和比例**(不过，User Agent 可能会有其他实现)。
 
 > 固有尺寸是元素自身定义的宽和高，不受周围的元素影响。
 
+::: tip
+有一点需要注意，我们可以使用 CSS 来控制图片和 iframe 的尺寸。实际上，元素本身是被设置属性的，但*内容*是不能的。
+:::
+
+以下的文章，可供参考：
+
++ [What are HTML Replaced Elements VS Non-Replaced Elements with Examples](http://ahmed.amayem.com/html-replaced-elements-non-replaced-elements-examples/)
++ [Replaced element](https://developer.mozilla.org/en-US/docs/Web/CSS/Replaced_element)
 #### Attribute 和 Property 在标准中的区分
 
 Attribute 是一个和元素有关的*键值对*。比如，`<input>` 里可以定义为 `button` 类型，需要在内部添加 `type="button"`。
@@ -191,3 +208,194 @@ margin area 由 `margin` 属性定义。该属性对所有元素都有效。**�
 ### 盒子的 background 属性
 
 ## 9 Visual formatting model
+
+VFM (Visual Formatting Model) 定义 User Agent 如何处理 文档树。在 VFM 中，一个元素会生成零个或更多个的盒子。这些盒子的布局收到以下因素影响：
+
++ 盒子尺寸和类型
++ 定位方案( normal flow/float/absolute positioning)
++ 元素之间的关系
++ 外部信息(比如：视口尺寸，图片的固有尺寸)
+
+几个概念：
+
+#### 视口
+
+视口(viewport)。简而言之，视口指的是页面渲染的有效区域。当视口尺寸变化时，User Agent 可能会改变文档的布局；当不足以容纳渲染的内容时，User Agent 应该提供滚动方案。
+
+#### Containing Blocks - 包含块
+
+在 CSS 中，很多的盒子的位置和尺寸要根据另一个盒子进行计算，就叫做元素的 *Containing Block* (包含块)。一般来说，父盒包含子盒。
+
+一个元素的 containing block 定义如下：
+
+1. 根元素所在的盒，称为 *初始包含块* (initial containing block)。
+2. 对于其他元素，如果元素的 `position` 属性值是 `relative` 或 `static` (也就是 in flow)，元素的包含块就是最近的父/祖先盒的 `content area`。其中，父/祖先盒是一个 Block Container Box (见下面的块容器盒) 或会生成 格式化内容 (BFC 或 IFC ，见下面的内容)。
+3. 如果 `position` 属性值是 `fixed`。包含块就是视口所在的区域。
+4. 如果 `position` 属性值是 `absolute`，则元素的包含块由最近的 `position` 非 `static` 属性值的父/祖先元素决定。如果其父/祖先元素是行内元素，则包含块就是生成元素的第一个和最后一个行内盒的 `padding area`；其他情况下，包含块就是其父/祖先的 `padding area`；如果没有这样的父/祖先元素，包含块就是 *初始包含块*。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Container</title>
+</head>
+<body>
+    <div>
+        <p>This is text in the first paragraph...</p>
+        <p>This is Text <em>in the <strong>Second</strong> paragraph</em></p>
+    </div>
+</body>
+</html>
+```
+
+以上面的例子为例：
+
++ `<p>` 的 Containing Block 由 `<div>` 确定。
++ `<em>` 和 `<strong>` 的 Container Block 都由第二个 `<p>` 确定。
+
+如果为 `div` 和 `em` 都添加 `style="position: absolute"`：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Container</title>
+</head>
+<body>
+    <div style="position: absolute">
+        <p>This is text in the first paragraph...</p>
+        <p>This is Text <em style="position: absolute">in the <strong>Second</strong> paragraph</em></p>
+    </div>
+</body>
+</html>
+```
+
+那么，根据上面第四条规则。`div` 的 Containing block 就不再由 `<body>` 而是 初始包含块 确定。`em` 的 Containing block 由 `div` 而不是原来的 `p`。
+
+重点的问题是：`<strong>` 的 Containing block 还是由 `<p>` 确定吗。我们来看第二条规则。问题就变成 `<em>` 是不是一个 Block Container Box 了。Block Container Box 中有一条是 *如果一个非置换元素的 `display` 属性值是 `block`、`list-item` 和 `table` 所生成的盒属于 Block Container Box*。所以起初 `<em>` 的 `display: inline` 不是一个 Block Container Box。
+
+![](http://p3puylt4n.bkt.clouddn.com/container01.jpg)
+
+之后由于 `<em>` 的 `position` 属性值变成了 `absolute`。根据 `position`、`display` 和 `float` 之间的相互影响(见后面的内容)，`<em>` 的 `display` 属性变成了 `display: block`，从而变成 Block Container Box。
+
+![](http://p3puylt4n.bkt.clouddn.com/container02.jpg)
+
+:::tip
+Containing block 影响到很多内容，比如很多元素属性的百分值都是由其元素的 Containing block 确定。Flex 盒也会涉及到 Containing block 的概念。
+:::
+
+接下来，是重要的 CSS2.2 中盒的类型。盒子的类型，会影响到 VFM。CSS2.2 中 `display` 属性定义盒子类型。
+
+#### 块级盒、块容器盒和块盒
+
+块级元素(Block-level elements)、块盒(Block boxes) 和 块容器盒(Block container box)是三个不同的概念。
+
+*Block-level Box* - `display` 属性值为 `block`、`list-item` 和 `table` 的元素就是 块级元素。这些属性会为内容生成一个 block-level principal box。**块级元素形成的块级盒(Block-level boxes)参与 Block Formatting Context (BFC, 块级格式上下文)
+
+*Block Container Box* - 块容器盒要么**只**包含块级盒(构成 BFC)，要么**只**包含 inline-level box(构成 IFC)。
+
+如果一个 Block-level Box 不是 table box 或可置换元素形成的盒，那么也是一个 Block Container Box。
+
+如果一个非置换元素的 `display` 属性值是 `block`、`list-item` 和 `table` 所生成的盒属于 Block Container Box, 同时也是 Block-level Box。
+
+有些盒子属于 Block Container Box，但不属于Block-level Box，比如 table cell 和 inline-box。
+
+*Block box* - 既是 Block Container Box 也是 Block-level Box 的称为 Block boxes。
+
+Block Container Box 和 Block-level Box 在数学上其实是一个相交的概念。类似于下面这个图：
+
+![](http://p3puylt4n.bkt.clouddn.com/block-container.png)
+> [图片出处](https://stackoverflow.com/questions/30883857/css-spec-block-level-box-block-container-box-and-block-box)
+
+第一点，Block Container Box 的用处在哪里。Block-level Box 会参与 BFC，但 Block Container Box 有什么作用呢？我们看定义：**块容器盒要么只包含块级盒(构成 BFC)，要么只包含 inline-level box(构成 IFC)**。所以呢， Block Container Box 是参与 *格式化内容*(formatting content)的。在 Block Container Box 内，要么是 BFC，要么是 IFC。
+
+第二点，table box 不是 Block Container Box 原因原因在于 table box 参与的是 table 布局，而非 block 布局。
+
+第三点，置换元素由于不包含其他的内容，所以也不是 Block Container Box。
+
+> [参考](https://stackoverflow.com/questions/30883857/css-spec-block-level-box-block-container-box-and-block-box)
+
+由上面的第一点，我们就能讨论到 Anonymous Block Box(匿名块盒) 的概念了。
+
+**Anonymous Block Box**
+
+很显然，Anonymous Block Box 也属于 Block-level Box。
+
+官方的例子：
+
+```html
+<div>
+  Some Text
+  <p>More Text</p>
+</div>
+```
+
+上面的 `<div>` 会生成一个 Block Container Box (包含 inline-content 和 block-content)，由于 Block Container Box 要么只包含 Block-level Box，要么只包含 Inline-level Box，而由于 `<p>` 是 Block-level Box，所以强制 Block Container Box 内只包含 Block-level Box。从而形成了一个 “匿名块盒”。
+
+![](http://p3puylt4n.bkt.clouddn.com/anon-block.png)
+
+还有一种生成 Anonymous Block Box 的方式是 *一个 inline box(下面会讲到 inline box 的概念) 包含一个处于文档流中的 block-level box*。下面这个例子：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Anonymous Block boxes</title>
+    <style>
+        p {
+            font-size: 16px;
+            color: red;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<P style="display: inline;">
+    This is anonymous text before the SPAN.
+    <SPAN style="display: block;">This is the content of SPAN.</SPAN>
+    This is anonymous text after the SPAN.
+</P>
+</body>
+</html>
+```
+
+添加 `display: inline` 使得 `<p>` 变成一个 inline box，添加 `display: block` 使得 `<span>` 变成一个 block-level box。得到的结果如下图：
+
+![](http://p3puylt4n.bkt.clouddn.com/anonymous-block-box.jpg)
+
+block-level box 将 inline box 分成两个 Anonymous Block Box(即便有一边是空的，也是如此)。结果就是，在 `<p>` 内部包含一个 Anonymous Block Box，接着是 `<span>` 确定的 Anonymous Block Box，最后是另一个 Anonymous Block Box。
+
+应用于 Anonymous Block Box 的可继承属性，其值继承自其闭合的非匿名盒。比如，Anonymous Block Box 的颜色继承元素 `<p>` 的 `color` 属性值。
+
+另一点需要注意的是，有 Anonymous Block Box 的元素的属性值仍然只适用于该元素的框和内容。所以，上例中为 `<p>` 添加 `border: 1px solid black` 会产生上图的结果：在 Anonymous Block Box 的周围画上线条。
+
+#### inline-level box 和 inline-box
+
+inline-leve box 和 inline-box 就没有这么复杂了。
+
++ inline-level 元素是不会为内容创建一个 块 的元素，内容会在一行显示。`display` 的属性值为 `inline`、`inline-table` 和 `inline-block` 的元素就是 inline-level 元素。**inline-level 元素形成的inline-block boxes 参与 Inline Formatting Context (IFC, 块级格式上下文)
++ 当一个 非置换的元素的 `display` 属性值为 `inline` 时，就是一个 inline-box。
+
+**Anonymous inline boxes**
+
+同理，CSS2.2 也有一个 Anonymous inline box 的概念。
+
+```html
+<p>Some <em>emphasized</em> text</p>
+```
+
+`<em>` 是一个行内元素，包含 'emphasized' 的内容就是一个 inline box。同时也会为 'Some ' 和 ' text' 生成两个 anonymous inline box。其他特点和 Anonymous Block Box 有相似的地方。
+
+#### collapsed margin
+
+定义：**两个或多个**毗邻的盒子(可能是兄弟盒，也可能不是)会坍塌成一个 margin。
+
+关键字解释：
+
+**毗邻** - 毗邻的要求如下(都满足)：
+
+- 全都是处于文档流(in-flow)的 block-level-box，并参与到相同的 BFC 中。
+- 不是 line box，没有 clearance, 没有 padding 或 border 将它们隔开。

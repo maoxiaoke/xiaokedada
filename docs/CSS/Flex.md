@@ -24,6 +24,8 @@
     - [Properties for the Children](#properties-for-the-children)
       - [flex](#flex)
       - [order](#order)
+      - [align-self](#align-self)
+  - [![](http://p3puylt4n.bkt.clouddn.com/align-self.jpg)](#http---p3puylt4nbktclouddncom-align-selfjpg)
   - [Examples](#examples)
 
 <!-- /TOC -->
@@ -140,11 +142,25 @@ flex-wrap属性
 ```
 
 + flex-start : items放置在cross-start行的margin边界
-+ flex-end : items放置在corss-end行的margina边界
-+ center : items在cross-axis的居中位置
-+ baseline : items沿着它们的baselines对齐
++ flex-end : items 放置在 corss-end 行的 margina 边界
++ center : items 在 cross-axis 的居中位置
++ baseline : items 沿着它们的 baselines 对齐
 + stretch (default) : 伸展以填充整个容器(min-width/max-width仍起作用)
 
+:::tip
+> 译者注：`align-items` 属性值为 `baseline` 表达的含义
+
+baseline 定义指的是*其内容的基准线*。这实际上是一个英文书写中的一个概念: the baseline is the line upon which most letters "sit" and below which descenders extend.
+
+![](http://p3puylt4n.bkt.clouddn.com/baseline01.png)
+
+所以当 items 之间的 `font-size` 不一致的时候，其表现就和 `flex-start` 不同了。
+
+![](http://p3puylt4n.bkt.clouddn.com/baseline02.png)
+
+[参考链接](https://stackoverflow.com/questions/34606879/whats-the-difference-between-flex-start-and-baseline)
+[Baseline](https://en.wikipedia.org/wiki/Baseline_(typography))
+:::
 #### align-content
 
 ![align-content](http://p3puylt4n.bkt.clouddn.com/align-content.svg)
@@ -226,7 +242,6 @@ flex-basis
 }
 ```
 
-
 #### order
 
 ![order-2](http://p3puylt4n.bkt.clouddn.com/order-2.svg)
@@ -241,6 +256,23 @@ flex-basis
 }
 ```
 
+::: warning
+以下是补充内容。
+
+#### align-self
+
+align-self 同样是 flex items 的一个属性，应用于单个 flex item。
+
+```css
+.item {
+  align-self: auto | flex-start | flex-end | center | baseline | stretch; /* defaul auto */
+}
+```
+
+align-self 赋予某个 flex item 在 cross-axis 不同的定位能力。
+
+![](http://p3puylt4n.bkt.clouddn.com/align-self.jpg)
+:::
 ---
 
 ## Examples
