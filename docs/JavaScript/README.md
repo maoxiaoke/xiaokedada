@@ -48,3 +48,4 @@ JavaScript 非常有趣。如果有机会，我愿意学 Go。
 Everyone can code. 但思想不一定所有的人都有。这小节存放一些思想领域的东西。现在能列举的包括设计范式、函数式编程等。
 
 + [书写有用而优雅的代码](./Small-and-Chunk-Code.md)
++ [你看到的 JavaScript，并不是真实的](./I-Dont-Know-JavaScript)

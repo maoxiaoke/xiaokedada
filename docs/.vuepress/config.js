@@ -21,15 +21,14 @@ module.exports = {
       { text: 'FirstMeet系列', link: '/FirstMeet/' },
       { text: 'CSS', link: '/CSS/' },
       { text: '读书笔记', link: '/ReadingNote/' },
-      { text: 'Resource', link: '/GatherAll/' },        
-      
+      { text: 'Resource', link: '/GatherAll/' },
     ],
     sidebar: {
       '/JavaScript/': genSidebarJavaScript (),
       '/FirstMeet/': genSidebarFirstMeet ('Frist-Meet 系列'),
       '/CSS/': genSidebarCSS ('层叠样式'),
       '/ReadingNote/': genSidebarNote('读书笔记'),
-      '/GatherAll/': genSidebarAll('资源聚合')   
+      '/GatherAll/': genSidebarAll('资源聚合')
     }
   }
 }
@@ -42,19 +41,19 @@ function genSidebarJavaScript () {
       collapsable: false,
       children: [
         'Require-and-Import',
-        'Property-Descriptors',        
+        'Property-Descriptors',
         'Depth-in-ES6',
         'Depth-in-This',
         'Depth-in-Closure',
         'Async-Programming',
-        'Prototype',        
+        'Prototype'
       ]
     },
     {
       title: '基础内容',
       collapsable: false,
       children: [
-        'AJAX',        
+        'AJAX',
         'Coercion',
         'Map-and-Reduce',
       ]
@@ -72,6 +71,7 @@ function genSidebarJavaScript () {
       collapsable: false,
       children: [
         'Small-and-Chunk-Code',
+        'I-Dont-Know-JavaScript'
       ]
     }
   ]
@@ -86,7 +86,8 @@ function genSidebarFirstMeet (title) {
       children: [
         'First-Meet-JSON',
         'First-Meet-Cache',
-        'First-Meet-Vue-Communication'
+        'First-Meet-Vue-Communication',
+        'First-Meet-Flux',
       ]
     }
   ]
@@ -100,7 +101,7 @@ function genSidebarCSS (title) {
       collapsable: false,
       children: [
         'Flex',
-        'CSS-ProTips',        
+        'CSS-ProTips',
         'Layout',
         'Center',
         'BFC',
@@ -134,7 +135,7 @@ function genSidebarAll (title) {
       collapsable: false,
       children: [
         'Reference',
-        'People-In-Konw',        
+        'People-In-Konw',
         'Tools-Resource',
         'Free-Book-Resources'
       ]
