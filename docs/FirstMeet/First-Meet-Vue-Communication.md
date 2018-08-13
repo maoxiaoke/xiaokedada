@@ -5,7 +5,7 @@
 最开始，`ref` 是什么？这是 Vue 实现的一个*特殊属性*，用来给一个元素(就是 HTML 定义的元素)或**子组件**注册的一个*引用*。这个属性被添加在**父组件**的 `$refs` 对象中。如果用在一个普通的 DOM 元素，`ref` 指的就是这个这个元素；如果用在一个子组件上，`ref` 指的是这个组件的一个 instance。
 
 > [官方解释](https://vuejs.org/v2/api/#ref)
-> 
+>
 从上面的描述中，我们可以得到一些信息：
 
 - `ref` 可以单纯地对一个 DOM 元素或一个组件进行标识。
@@ -125,12 +125,162 @@ clickSon () {
 
 > [Github demo 地址](https://github.com/maoxiaoke/vue-communication/tree/master/reftest)
 
+---
+
+## props、$emit 和 .sync
+
+`props` 是*父组件向子组件*传递数据的一种方式，这是一种单向的数据传播方式。使用起来也非常简单：
+
+```html
+<!--Ancestor.vue-->
+<template>
+  <div class="hello">
+    <h1>I am a father of child, and an ancestor of grandson</h1>
+    <child :ancestor-message="grandsonMessage" v-on:descendant="getMeg"></child>
+  </div>
+</template>
+
+<script>
+import Child from './Child'
+export default {
+  components: {
+    Child
+  },
+  data () {
+    return {
+      grandsonMessage: 'Message from an acenstor'
+    }
+  },
+  methods: {
+    getMeg (msg) {
+      console.log(msg)
+    }
+  },
+}
+</script>
+
+<style scoped>
+  .hello {
+    border: 1px solid black;
+    height: 400px;
+    background: whitesmoke
+  }
+</style>
+```
+
+父组件 `<Ancestor />` 向下传递数据 `ancestorMessage`（[为啥不写成 `ancestor-message`](https://vuejs.org/v2/guide/components-props.html#Prop-Casing-camelCase-vs-kebab-case)）。并使用 `v-on` 监听了子组件自定义的 `descendant` 事件。
+
+下面是子组件的代码：
+
+```html
+<!-- Child.vue -->
+<template>
+  <div class="child">
+    <h2> {{ ancestorMessage }} </h2>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    ancestorMessage: {
+      type: String,
+      required: true
+    }
+  },
+  mounted () {
+    this.$emit('descendant', 'hello Wall·E')
+  }
+}
+</script>
+<style scoped>
+  .child {
+    border: 2px dotted red;
+    height: 250px;
+    margin: 0 20px;
+    background: rgb(214, 206, 206);
+  }
+</style>
+```
+
+这都很简单。需要强调的是，**不要试图在子组件修改 props**，所以试图修改 props 时，可以[使用 data 或 computd 属性拷贝一份 props ](https://vuejs.org/v2/guide/components-props.html#One-Way-Data-Flow)。
+
+::: tip
+总结一下：父组件通过 props 向子组件传值，子组件可通过 `$emit` 一个自定义事件向父组件传值。
+另外，通过 [`$emit` 传递消息](https://vuejs.org/v2/guide/components.html#Sending-Messages-to-Parents-with-Events) 还有其他的写法，比如：
+
+```html
+<!--Ancestor.vue-->
+<child :ancestor-message="grandsonMessage" v-on:descendant="grandsonMessage += $event"></child>
+
+<!-- Child.vue -->
+<button :click="$emit('descendant', ' Hello Wall·E')">
+```
+:::
+
+但是，很多情况我们会有 *双向绑定 props* 的需求。这种情况下，我们可以使用 [`.sync` Modifier](https://vuejs.org/v2/guide/components-custom-events.html#sync-Modifier)。
+
+比如有个例子，父组件传递一个 `isFold` 判断子组件的内容是否展开，同时子组件也会试图修改 `props` 的值，来决定自身是否被展开。
+
+```html
+<!-- SubMenu.vue -->
+<nav-sub-menu :is-fold.sync="defaultOpen">
+  <item-menu></item-menu>
+</nav-sub-menu>
+
+<script>
+  export default {
+    data () {
+      return {
+        defaultOpen: true
+      }
+    }
+  }
+</script>
+```
+
+`:is-fold.sync="defaultOpen"` 是一种简写方式，等同于：
+
+```html
+<nav-sub-menu
+  v-bind:is-fold="defaultOpen"
+  v-on:update:is-fold="defaultOpen = $event"
+>
+```
+
+子组件的代码：
+
+```html
+<!-- ItemMenu.vue -->
+<div
+  @click="toggleSubMenu">
+</div>
+<script>
+export default {
+  props: {
+    isFold: {
+      type: Boolean,
+      default: true
+    }
+  },
+  methods: {
+    toggleSubMenu () {
+      this.$emit('update:isFold', !this.isFold)
+    }
+  }
+}
+</script>
+```
+
+[Github demo 地址](https://github.com/maoxiaoke/vue-communication/tree/master/propstest)
+
+---
+
 ## $attrs 和 $listeners
 
 在高阶组件中，多层级组件通信可以是通过 `props` 和 `$emit` 进行，从而达到跨层级组件通信。
 
 > 当然，多层级组件通信还可以通过 `Vuex` 或全局 `Event Bus` 的方式。
-> 
+>
 但是，以 `props` 和 `$emit` 这种方式进行通信有一个很大的缺点，以下图为例：
 
 ![](http://p3puylt4n.bkt.clouddn.com/$attrs.jpg)
@@ -140,7 +290,7 @@ clickSon () {
 `$attrs` 和 `$listeners` 就是为了解决这一问题。两者并不是一类新的组件通信方式，而是 `props` 和 `$emit` 通信方式的一种补充。
 
 > 注意： `$attrs` 是在 `Vue 2.4` 才引入的。
-> 
+>
 祖先组件 A：`Ancestor.vue`:
 
 ```html
@@ -272,3 +422,68 @@ export default {
 ![](http://p3puylt4n.bkt.clouddn.com/console.jpg)
 
 > [Github demo 地址](https://github.com/maoxiaoke/vue-communication/tree/master/attrText)
+
+---
+
+## v-model
+
+[v-model](https://vuejs.org/v2/guide/components.html#Using-v-model-on-Components) 是 Vue 实现的一种双向绑定。
+
+比如：
+
+```html
+<input v-model="text" />
+
+<!-- 等价于 -->
+<input
+  :value="text"
+  @input="text = $event.target.value">
+```
+
+相对而言是一种比较简单的操作，绑定 `<input>` 的 `name` 属性，监听 `input` 事件。
+
+如果我们想要对自定义的组件使用 `v-model` 指令。当用在自定义组件中，比如：
+
+```html
+<my-input v-model="text" />
+<!-- 等价于 -->
+<my-input
+  :value="text"
+  @input="text = $event" />
+```
+
+举个例子：自定义一个 `MyInput` 组件。
+
+```html
+<!-- Input.vue -->
+<template>
+  <input
+    :value="value"
+    @input="$emit('input', $event.target.value)" />
+</template>
+
+<script>
+export default {
+  name: 'MyInput',
+  props: ['value']
+}
+</script>
+```
+
+然后使用 `Vue.component` 封装一下：
+
+```js
+// index.js
+import Input from './Input.vue'
+import Vue from 'vue'
+
+export default Vue.component(Input.name, Input)
+```
+
+可以看到，我们需要做两件事:
+
++ 将 `<input>` 的 `value` 属性绑定到 `props` 的 `value` 中来
++ `$emit` 自定义的 event 事件
+
+[Github Demo](https://github.com/maoxiaoke/vue-communication/tree/master/modeltest)
+

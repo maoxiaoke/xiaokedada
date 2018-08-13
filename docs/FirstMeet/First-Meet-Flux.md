@@ -83,3 +83,47 @@ flux 比较关注的一点是，`data`。flux 将数据（信息）作为首要�
 > 参考来源 [Design Patterns: PubSub Explained](https://abdulapopoola.com/2013/03/12/design-patterns-pub-sub-explained/)
 
 flux 在内部维持一个状态树。
+
+#### 逻辑和状态紧密耦合
+
+flux 使用 Store 集中修改状态，这样会导致逻辑与数据紧密耦合，这是 flux 的 Store 的一个特点。这样，不需要花费太多的精力在关注点分离，逻辑和状态变更也更为简单。
+
+### flux 的结构图
+
+![](http://p3puylt4n.bkt.clouddn.com/flux-simple-f8-diagram-with-client-action-1300w.png)
+
+> 图片来自 [flux 官网](https://facebook.github.io/flux/docs/in-depth-overview.html#content)
+
+#### Action
+
+官网是这样定义的：*The actions are simple objects containing the new data and an identifying type property.* - actions 是包含新数据（负载）和标识类型属性的简单的对象。
+
+我们可以将 action 作为给系统传递新数据的唯一途径，是系统的入口。
+
+大多数情况下，用户和视图交互，就会触发 action。
+
+:::tip
+黄金法则： 没有 action，一切都不会发生
+:::
+
+#### Dispatcher
+
+Dispatcher 的职责是将 Actions 分发到 Store 中。在 flux 应用中，只有一个 Dispatcher，它是 Store 回调函数注册的地方，它将决定如何处理所有的依赖。也就是说，有了 Store 注册的回调函数，Store 就会知道哪个 Action 和它存储的状态相关。
+
+:::tip
+黄金法则： Dispatcher 是数据依赖的最终仲裁者
+:::
+
+#### Store
+
+Store 是 flux 保存状态的地方，也是状态唯一能够被修改的地方。
+
+:::tip
+黄金法则： 状态存储在 Store 中，有且只有 Store 可以改变它们。
+:::
+
+#### View
+
+和 MV* 架构一致的地方，视图是负责渲染数据的。但用户交互（事件）的时候，MV* 架构可能会触发 Controller，也可能会直接修改 Model 里面的数据。而在 flux 中，则会触发 Action。
+
+这样的目的，保障 flux 的单一入口。也就是说，通过 `AJAX` 获取数据来更新状态和用户点击按钮所触发的行为是一致的，对 flux 而言，两者没有区别。
