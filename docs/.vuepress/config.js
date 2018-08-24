@@ -21,14 +21,14 @@ module.exports = {
       { text: 'FirstMeet系列', link: '/FirstMeet/' },
       { text: 'CSS', link: '/CSS/' },
       { text: '读书笔记', link: '/ReadingNote/' },
-      { text: 'Resource', link: '/GatherAll/' },
+      { text: 'R & T', link: '/GatherAll/' },
     ],
     sidebar: {
       '/JavaScript/': genSidebarJavaScript (),
       '/FirstMeet/': genSidebarFirstMeet ('Frist-Meet 系列'),
       '/CSS/': genSidebarCSS ('层叠样式'),
       '/ReadingNote/': genSidebarNote('读书笔记'),
-      '/GatherAll/': genSidebarAll('资源聚合')
+      '/GatherAll/': genSidebarAll('资源和前端思考')
     }
   }
 }
@@ -137,7 +137,8 @@ function genSidebarAll (title) {
         'Reference',
         'People-In-Konw',
         'Tools-Resource',
-        'Free-Book-Resources'
+        'Free-Book-Resources',
+        'Summarize-Your-Career'
       ]
     }
   ]

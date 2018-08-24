@@ -110,6 +110,13 @@ flux 使用 Store 集中修改状态，这样会导致逻辑与数据紧密耦�
 
 Dispatcher 的职责是将 Actions 分发到 Store 中。在 flux 应用中，只有一个 Dispatcher，它是 Store 回调函数注册的地方，它将决定如何处理所有的依赖。也就是说，有了 Store 注册的回调函数，Store 就会知道哪个 Action 和它存储的状态相关。
 
+和传统的 Publish-subscribe pattern不同的地方在于：
+
+1. 每个回调并不是和特定的事件相对应（即，单个回调可以处理多个事件）。但是，负载（PayLoad）只被分发到特定的回调。
+2. 回调可以全部或部分延迟运行，直到所依赖的回调被执行完。
+
+> 所谓负载(PayLoad)，就是传递给回调函数的 *参数*。
+
 :::tip
 黄金法则： Dispatcher 是数据依赖的最终仲裁者
 :::
