@@ -18,7 +18,7 @@
     "domain": "xiaoke",
     "public": "./docs/.vuepress/dist",
     "notice": [
-      "qiangiang.mao@ele.me"
+      "qiangqiang.mao@ele.me"
     ],
     "build": [
       "yarn",

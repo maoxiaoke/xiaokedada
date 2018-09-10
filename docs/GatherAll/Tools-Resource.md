@@ -4,6 +4,10 @@
 
 [GitHub - nvbn/thefuck: Magnificent app which corrects your previous console command.](https://github.com/nvbn/thefuck)
 
+[Marp](https://github.com/yhatt/marp) - markdown 制作 PPT
+
+[BIG](https://github.com/tmcw/big) - 制作大字版 PPT
+
 ## 其他
 
 [CODELF](https://unbug.github.io/codelf/) - 教你如何命名
