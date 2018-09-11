@@ -15,3 +15,4 @@
 :::
 
 + [Functional JavaScript](./Functional-JavaScript.md)
++ [JavaScript Promise 迷你书（中译本）](./JavaScript-Promise)

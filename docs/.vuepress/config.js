@@ -121,7 +121,8 @@ function genSidebarNote (title) {
       title,
       collapsable: false,
       children: [
-        'Functional-JavaScript'
+        'Functional-JavaScript',
+        'JavaScript-Promise'
       ]
     }
   ]
