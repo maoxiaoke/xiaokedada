@@ -334,8 +334,18 @@ api.then((res) => {
 更多参考：
 
 1. [Fluxxor](http://fluxxor.com/what-is-flux.html) - Fluxxor 是一个纯粹的 flux 库
+2. [The Case for Flux](https://medium.com/swlh/the-case-for-flux-379b7d1982c6)
+3. [Why do we need Flux with React?](https://stackoverflow.com/questions/35924036/why-do-we-need-flux-with-react) - Stack Overflow 问答
+4. [MVC vs Flux – which one is better?](http://voidcanvas.com/flux-vs-mvc/) - 一篇批评 flux 的理性文章
 
+5. [Idiomatic Redux: Why use action creators?](https://blog.isquaredsoftware.com/2016/10/idiomatic-redux-why-use-action-creators/)
 
+6. [Why we are doing MVC and FLUX wrong
+](http://www.christianalfoni.com/articles/2015_08_02_Why-we-are-doing-MVC-and-FLUX-wrong)
+
+7. [The Evolution of Flux Frameworks](https://medium.com/@dan_abramov/the-evolution-of-flux-frameworks-6c16ad26bb31)
+
+8. [The Case for Flux](https://medium.com/swlh/the-case-for-flux-379b7d1982c6) - 一篇描述 flux 应用场景的一篇文章
 
 
 问题的思考逻辑：

@@ -88,6 +88,7 @@ function genSidebarFirstMeet (title) {
         'First-Meet-Cache',
         'First-Meet-Vue-Communication',
         'First-Meet-Flux',
+        'First-Meet-JavaScript'
       ]
     }
   ]
