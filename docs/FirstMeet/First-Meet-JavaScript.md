@@ -36,3 +36,5 @@ function tag(strings, ...values) {
 tag`Hello ${ a + b } World ${ a * b }`;
 // "Bazinga!"
 ```
+
+更多请参阅[Javascript: call functions without using parentheses (what?!)](https://michelenasti.com/2018/09/19/Javascript-chiamare-funzioni-senza-usare-parentesi-(what!).html)
