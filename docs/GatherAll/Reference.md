@@ -28,6 +28,7 @@
 ## 算法网站
 
 - [Code Kata](https://www.codewars.com/)
+- [exercism](https://exercism.io/my/tracks/javascript)
 
 
 ## 其他

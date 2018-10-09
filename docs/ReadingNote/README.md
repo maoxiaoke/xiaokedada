@@ -15,4 +15,5 @@
 :::
 
 + [Functional JavaScript](./Functional-JavaScript.md)
-+ [JavaScript Promise 迷你书（中译本）](./JavaScript-Promise)
++ [JavaScript Promise 迷你书（中译本）](./JavaScript-Promise.md)
++ [Why-Control-Time](./Why-Control-Time.md)

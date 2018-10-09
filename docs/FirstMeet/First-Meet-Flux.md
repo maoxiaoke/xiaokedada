@@ -33,9 +33,11 @@ MVC 是开发用户界面的一种软件架构。其中 M，V，C 的关系大�
 
 2. 不只有一个数据入口。
 
+没有一个统一的数据收口。实际情况中，更新 Model 的数据入口可以在应用的任何地方生成。
+
 3. 没有单个 State Store 的概念。
 
-当 View 和 Model 进行解耦后，状态的改变可能会 request 到多个 Model（和后端的处理一样，request 到多个数据库）。如果对 Model 进行抽象，Model 不是和 View 一对一对应。当项目变得很大的时候，就可能会出现这样的结果：
+当 View 和 Model 进行解耦后，状态的改变可能会 request 到多个 Model（和后端的处理一样，request 到多个数据库）。如果对 Model 进行抽象，Model 不是和 View 一对一对应。当项目变得很大的时候，就可能会出现这样的结果(这当然是在 MVC 设计上非常不合理的状态下)：
 
 > 这里说的 state，称为 状态。跟 Model data 并不是等价的。
 
@@ -46,13 +48,6 @@ MVC 是开发用户界面的一种软件架构。其中 M，V，C 的关系大�
 ### MV* 的一个很大的优势
 
 MV* 架构的一个很大的优势在于，确保[**关注点分离**](https://en.wikipedia.org/wiki/Separation_of_concerns)(Separation of concerns，SOC)，使得功能充分解耦。这样，在 MV* 的系统中，逻辑被认为是独立的实体，分散到组件的各个地方。
-
-
-## Flux 的使用场景
-
- `action` 多。
-
----
 
 ## 当我们在讨论 flux 的时候，我们在说什么
 
@@ -100,7 +95,7 @@ flux 的更新轮回有这么几个特点
 
 发布和订阅模式(Publish-subscribe pattern) 是组件间通信的中比较流行的一种机制。举个例子: Vue 的 `$on` 和 `$emit` 就是这样的一种方式。这种方式一定程度上进行了 *松耦合*，发布者和订阅者之间能够相互独立地运行。
 
-但发布和订阅模式的最重要的优点，同时也是最大的缺点。第一，信息中介不会传递信息传递的状态，无法获知消息传递是成功还是失败。另外，发布者同样也不知道订阅者的状态。最后，当订阅者数量增加时，会不会造成系统不稳定？
+但发布和订阅模式的最重要的优点，同时也是最大的缺点。第一，信息中介不会传递信息的状态，无法获知消息传递是成功还是失败。另外，发布者同样也不知道订阅者的状态。最后，当订阅者数量增加时，会不会造成系统不稳定？
 
 > 参考来源 [Design Patterns: PubSub Explained](https://abdulapopoola.com/2013/03/12/design-patterns-pub-sub-explained/)
 
@@ -116,7 +111,7 @@ flux 使用 Store 集中修改状态，这样会导致逻辑与数据紧密耦�
 
 > 图片来自 [flux 官网](https://facebook.github.io/flux/)
 
-#### Action
+#### Action - 数据入口，描述具体要发生什么
 
 官网是这样定义的：*The actions are simple objects containing the new data and an identifying type property.* - actions 是包含新数据（负载）和标识类型属性的简单对象。
 
@@ -141,10 +136,17 @@ flux 使用 Store 集中修改状态，这样会导致逻辑与数据紧密耦�
 
 我们可以将 action 作为给系统传递新数据的唯一途径，是系统的入口。
 
+在设计 Action 的考量有以下几点：
 
-:::warning
-Action 是数据的入口。没有 action，一切都不会发生。Flux 使用 `Action` 来描述具体要发生什么。
-:::
+1. 显式优于隐式
+
+相对于 MV* 架构中 Model 的数据变化很多是不太明显的(比如双向绑定的私下交易)，Flux 则要求所有的数据变化都需要触发一个 Action，以便于数据的追溯和应用的调试。
+
+2. 所有的状态改变都由 Action 产生
+
+3. 数据的一致性
+
+Action 设计的另一点考虑是*数据的一致性*。所有提交到 Store 的数据尽量都遵循统一的格式定义。既能剔除多余数据对 Store 设计的干扰，亦能使得数据的处理清晰明朗。
 
 #### Dispatcher
 
@@ -189,9 +191,20 @@ Dispatcher 是数据依赖的最终仲裁者
 
 Store 是 flux 保存状态的地方，也是状态唯一能够被修改的地方。
 
-:::warning
-状态存储在 Store 中，有且只有 Store 可以改变它们。
-:::
+Store 的设计遵循以下转变。
+
+```js
+f(state, [...actions]) -> newState
+```
+
+1. 对于一个给定的状态，由 Actions 触发的 mutation 是确定的
+2. 如果看成是一个 reducer，Store 就是 accumlators。
+
+即变成：
+
+```js
+f(state, [...actions]) -> middleware -> newState
+```
 
 #### View
 
@@ -199,34 +212,19 @@ Store 是 flux 保存状态的地方，也是状态唯一能够被修改的地�
 
 这样的目的，保障 flux 的单一入口。也就是说，通过 `AJAX` 获取数据来更新状态和用户点击按钮所触发的行为是一致的，对 flux 而言，两者没有区别。
 
+## Usage Pattern
 
-
-----
-
-## flux 优化
-
-### Action 的优化
-
-action 是传递数据给系统的唯一途径。前面我们隐约提到了数据的一些分类。比如，以数据来源分类：
-
-+ 用户输入
-+ API 返回
-+ 视图产生(UI 状态)
-+ 等等
-
-从一个更抽象的角度来分类(即软件层面)：
-
-+ 共享数据
-+ 动态数据
-
-#### ActionCreator
+### Action Creator
 
 在实际的项目中，我们不太可能直接将 `Action` 和我们的业务代码杂糅起来，而更适合用 *模块化* 的解决方案。总结来说，使用 `ActionCreator` 有以下优点：
 
 1. 模拟数据 - `ActionCreator` 可以让我们在真实数据和模拟数据之间切换自如。
-2. 更利于模块化的组织 `Actions` - 当然，单纯的 `Action` 也可以进行模块化组织。
+2. 基本的抽象
+3. 关注点分离
+4. 封装和一致性
+5. 可测试和灵活性
 
-`ActionCreator` 也很简单。即，`Action` 的一个包装器。例如：
+`ActionCreator` 也很简单。即，通过依赖注入 Dispatcher 对 `Action` 进行的包装。例如：
 
 ```js
 // './action/load-tasks'
@@ -249,6 +247,8 @@ export function loadTasks () {
   })
 }
 ```
+
+> [Not this case in Redux](https://redux.js.org/basics/actions#action-creators) - 仅仅是返回 Action 的函数
 
 #### Asynchronous Actions
 
@@ -287,12 +287,7 @@ api.then((res) => {
 + 更好地跟踪状态变化
 + 可能有利于抽象化 `Action`
 
-对以上内容的总结，在对 `Action` 的优化过程中，更强调的一下两点：
-
-+ 模块化
-+ `ActionCreator`
-
-### Store 的优化 - 优良的 Store 设计是 flux 的基础
+### 优良的 Store 设计是 flux 的基础
 
 对于一个中大型应用，通常比较复杂，掺杂大量功能，Store 会表现得更为复杂。我们不可能为每个功能都设计一个 Store，这完全是不合理的。
 
@@ -310,9 +305,14 @@ api.then((res) => {
 
 另外一个解决方案是，将所有的 `State` 放在一个 `Store` 里面。这样的缺陷是，单个 `Store` 的复杂度太高，将它重构成多个 `Store` 是有必要的。
 
-### Dispatcher 的优化
+#### Immutable Store
 
-----
+在整个 flux 的设计中，都非常强调只有 Actions 才能改变 Store 里的状态。对于一些 *非 Immutable 操作* 会导致 Store 里的状态变化变得非常隐蔽。
+
+所以，
+
+1. 谨慎使用一些非 Immutable 操作，比如 `...`、`Object.assign()`、`Array.prototype.find()` 等。
+2. 使用 `ImmutableJS` 等库。
 
 ## 和 View 层交互
 
@@ -328,10 +328,17 @@ api.then((res) => {
 
 官方包装了 Node 的 `EventEmitter` 的模块叫 `fbemitter`。
 
-### Immutable Store
+## Flux 的使用场景
 
+Flux 并非是万能的，对于一般的项目而言，引入 Flux 会产生大量的冗余代码。因此，在使用 Flux 前我们需要考虑以下问题：
 
-更多参考：
+1. 你的状态有很多来源吗
+2. 你的应用有大量的级联更新吗
+3. 你的应用有很多复杂的状态更改吗
+
+如果都是否定，也许最基本的框架就可以解决问题。
+
+## 更多参考
 
 1. [Fluxxor](http://fluxxor.com/what-is-flux.html) - Fluxxor 是一个纯粹的 flux 库
 2. [The Case for Flux](https://medium.com/swlh/the-case-for-flux-379b7d1982c6)
@@ -348,7 +355,7 @@ api.then((res) => {
 8. [The Case for Flux](https://medium.com/swlh/the-case-for-flux-379b7d1982c6) - 一篇描述 flux 应用场景的一篇文章
 
 
-问题的思考逻辑：
+## 问题的思考逻辑
 
 1. 是什么？
 2. 为什么？

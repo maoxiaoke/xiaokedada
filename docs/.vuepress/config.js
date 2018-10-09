@@ -123,7 +123,8 @@ function genSidebarNote (title) {
       collapsable: false,
       children: [
         'Functional-JavaScript',
-        'JavaScript-Promise'
+        'JavaScript-Promise',
+        'Why-Control-Time'
       ]
     }
   ]
