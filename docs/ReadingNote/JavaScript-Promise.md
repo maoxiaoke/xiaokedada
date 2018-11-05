@@ -229,7 +229,7 @@ Promise.resolve(42).then(throwError, () => {
 // error: Uncaught (in promise) Error: 42 at throwError (<anonymous>:2:9)
 
 // catch 方式
-Promise.resolve(42).then(throwError).catch(() => {     console.log('catch 方式')
+Promise.resolve(42).then(throwError).catch(() => { console.log('catch 方式')
 })
 // 'catch 方式'
 ```
@@ -239,3 +239,215 @@ Promise.resolve(42).then(throwError).catch(() => {     console.log('catch 方式
 而 `catch` 方式，则遵循了 `throwError` -> `onRejected` 的方式。
 
 所以，`catch` 方式是最佳实践。
+
+下面都是[我](https://github.com/maoxiaoke) 加的内容。
+
+## 返回 Promise 的函数
+
+比如下面的这个函数：
+
+```js
+function aPromise () {
+  return Promise.resolve(1)
+  .then(res => {                      // Task 1
+    return 2
+  })
+  .catch(e => { console.error(e)})   // Catch 2
+}
+let bPromise = aPromise()
+aPromise().then(res => { console.log (res)}).catch(e => { console.error(e.message)})
+```
+
+`aPromise()` 返回的一个 Promise，对于 `bPromise` 而言，是函数 `aPromise()` 最终的 `resolve` 或 `reject` 的值(即 Task 1 的完成值)。
+
+在标识一个 Promise 时，通常是一个这样的方式：
+
+```
+[[PromiseStatus]]: "resolved"
+[[PromiseValue]]: undefined
+```
+
+即两个内部属性 `[PromiseStatus]]` 和 `[[PromiseValue]]`。对于每个 Promise 的分析都可以采用这样的结构方式。上例的 `bPromise` 的 `[[PromiseStatus]]` 应该是 `"resolved"`，而 `[[PromiseValue]]` 是 `2`。
+
+对于很多类似的问题，都可以采用这种思考方式。
+
+## catch() 之后的 then()
+
+一般来说，我们将 `catch()` 放在 `then()` 链的最后，以便 *捕获链上的任何错误*。
+
+但是仍可以有 `then().catch().then().catch()` 这样的链方式。
+
+```js
+function aPromise () {
+  return Promise.resolve(1)
+  .then(res => {
+    throw 'error'
+  })                        // Task 1
+  .catch(e => { console.error(e)}) // Catch 1
+  .then(() => { Promise.resolve(2)})  // Task 2
+  .catch(e => { console.error(e)})  // Catch 2
+}
+```
+
+执行顺序是，就算 Catch 1 捕获到 Task 1 的错误，Task 2 仍然执行。Catch 2 只能捕获 Task 2 的错误；Task 1 的错误由 Catch 1 捕获。
+
+
+## 使用 reduce() 顺序执行 promise
+
+`Array.prototype.reduce()` 是一个非常函数化的方法，其语义化为：通过在循环时将结果存储在累加器(accumulator)中，从而把一堆东西减少(reduce)为一个。
+
+比如，有一批挨个处理的数据，当其顺序执行到最后一个都返回 Fulfilled 时，执行成功；其中有一个返回 Rejected 时， 执行失败。
+
+```js
+let tasks = [1,2,3]
+
+function methodThatReturnsAPromise () {
+    return Promise.resolve(true)
+}
+tasks.reduce((previousPromise, nextID) => {
+  return previousPromise.then(() => {
+    return methodThatReturnsAPromise(nextID);
+  });
+}, Promise.resolve());
+```
+
+倘若使用 `async/await` 语法。可以更为直接一点：
+
+```js
+let tasks = [1,2,3]
+tasks.reduce(async (previousPromise, nextID) => {
+  await previousPromise
+  return methodThatReturnsAPromise(nextID);
+}, Promise.resolve())
+```
+
+::: warning
+相较于 `Promise.all([ task1, task2, task3 ])`，两者是有区别的。
++ 其一，`Promise.all([ task1, task2, task3 ])` 是同时开始，并行执行的。而采用 `reduce()` 方法的是顺序执行的。
++ 其二，`Promise.all([ task1, task2, task3 ])` 适合 tasks 长度短且 task 不相似的情况。
+:::
+
+我们还可以思考一下变种：
+
+```js
+let tasks = [1,2,3]
+let promise = Promise.resolve();
+for (const nextID of tasks) {
+  promise = promise.then(() => methodThatReturnsAPromise(nextID));
+}
+```
+
+实际上这种方式并不能达到我们的要求，因为 `for...in` 总是同步进行的。实际上上述代码的运行情况如下：
+
+```js
+let tasks = [1,2,3]
+let promise = Promise.resolve()
+
+// loop 1
+promise = promise.then(() => methodThatReturnsAPromise(1))
+// loop 2
+promise = promise.then(() => methodThatReturnsAPromise(2))
+// loop 3
+promise = promise.then(() => methodThatReturnsAPromise(3))
+```
+
+如果你对[轮询机制](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop) 比较了解的话，最终的结果应该是最后完成的 resolve 或 reject。
+
+对于上述的变种，如下：
+
+```js
+async function handleSequencePromise () {
+  for (const nextID of tasks) {
+    try {
+      await promiseReturningMethod(nextID)
+    } catch () {
+      return
+    }
+  }
+}
+```
+
+## new Promise (reslove) 和 Promise.reslove() 的区别
+
+正如在上面提到的。我们可以认为 `Promise.resolve(42)`，是下列代码的语法糖：
+
+```js
+new Promise((resolve, reject) => {
+  resolve(42)
+})
+
+```
+
+但两者表达试图表达的含义并非一致。
+
+`Promise.resolve()` 创建的是一个已经 resolved 的 promise，而 `new Promise(resolve)` 除了可以创建已经 resolved 或 rejected 的 promise (如果是这类情况，实际上跟 Promise.resolve() 和 Promise.reject() 的表现并无二致)，还可以创建处于 Pending 状态的 promise (这一点才是 new Promise(reslove) 真正发挥实力的地方)。
+
+下面的例子中，会使用 `setTimeout()` 来模拟一个异步函数。
+
+```js
+function delay (ms) {
+  return new Promise(resolve => {
+    setTimeout(() => { resolve('DONE') }, ms)
+  })
+}
+const x = delay(10000)
+/*
+在 10s 之前， `x` 的状态为：
+[[PromiseStatus]]: "pending"
+[[PromiseValue]]: undefined
+
+10s 之后，`x` 的状态为：
+[[PromiseStatus]]: "resolved"
+[[PromiseValue]]: "DONE"
+*/
+```
+
+## Promise 和差错控制
+
+### 基于 Promise 的函数不该 throw 异常
+
+我们知道，`throw` 是 JavaScript 主动抛出异常的一种方式。比如，我们用在 Promise 当中：
+
+```js
+// 使用 `throw` 抛出错误
+Promise.resolve()
+.then(() => {
+  throw new Error('error')
+})
+.catch(e => console.log(e))
+// "error"
+
+// 使用 reject 方式
+Promise.resolve()
+.then(() => {
+  Promise.reject('error')
+})
+.catch(e => console.log(e))
+// "error"
+```
+
+看上去两者似乎表现一致，但 `throw` 是**同步**抛出错误，最终被 catch 捕获；而 `reject` 是将该 Promise 的 `[[PromiseStatus]]` 置为 `rejected`，是一种异步行为。
+
+
+为什么用 `reject` 而不是 `throw` ?
+
+## resolve 是什么
+
+## Promise 结合 setTimeout()
+
+## 返回 Promise 链的函数
+
+如何？？？
+
+文章有参考：
+
++ [Why Using reduce() to Sequentially Resolve Promises Works](https://css-tricks.com/why-using-reduce-to-sequentially-resolve-promises-works/)
++ [Back to Basics: Running Promises in Serial with Array.reduce()](https://decembersoft.com/posts/promises-in-serial-with-array-reduce/)
++ [promise-reduce的一个库](https://github.com/yoshuawuyts/promise-reduce/blob/master/index.js#L21:42)
+
+TODO:
+
+- [] Difference between returning a promise vs returning undefined inside a promise
+- [] JavaScript Promises - reject vs. throw
+- [] new Promise 没有 return，却有返回
+- [] try...catch/ 差错控制

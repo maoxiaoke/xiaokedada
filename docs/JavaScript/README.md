@@ -28,6 +28,16 @@ JavaScript 非常有趣。如果有机会，我愿意学 Go。
 + [JavaScript 异步编程](./Async-Programming.md)
 + [再谈原型和继承](./Prototype.md)
 
+#### Re-learn ES6
+
+深入讲解 ES6 语法。主要聚焦这么几个问题：
+
+1. 提出是为了解决什么
+2. 核心是什么
+
++ [最佳实践，使用 let/const](./ES6-Let-and-Const.md)
++ [万物皆不同 - Symbols](./ES6-Symbols.md)
+
 #### 基础内容
 
 这小节主要是存放一些基础的学习内容，不会有太大理解难度。
@@ -42,6 +52,7 @@ JavaScript 非常有趣。如果有机会，我愿意学 Go。
 
 + [原生JavaScript的DOM操作](./DOM-Operation.md)
 + [再来仔细研究DOM](./DOM-More.md)
++ [和 URL 有关的 Location 和 History](./DOM-History.md)
 
 #### Thinking-in-JavaScript
 
@@ -49,3 +60,4 @@ Everyone can code. 但思想不一定所有的人都有。这小节存放一些�
 
 + [书写有用而优雅的代码](./Small-and-Chunk-Code.md)
 + [你看到的 JavaScript，并不是真实的](./I-Dont-Know-JavaScript)
++ [有关代码重构和整洁之道](./Refactor-JavaScript.md)

@@ -13,6 +13,7 @@ module.exports = {
     repo: 'maoxiaoke/xiaokedada',
     repoLabel: 'Github',
     editLinks: true,
+    sidebarDepth: 5,
     // docsDir: 'docs',
     editLinkText: '在 Github 上编辑此页',
     lastUpdated: '上次更新',
@@ -30,6 +31,10 @@ module.exports = {
       '/ReadingNote/': genSidebarNote('读书笔记'),
       '/GatherAll/': genSidebarAll('资源和前端思考')
     }
+  },
+  markdown: {
+    // lineNumbers: true,
+    toc: { includeLevel: [2, 3, 4] }
   }
 }
 
@@ -50,6 +55,15 @@ function genSidebarJavaScript () {
       ]
     },
     {
+      title: 'Re-learn ES6',
+      collapsable: false,
+      children: [
+        'ES6-Let-and-Const',
+        'ES6-Symbols',
+        'ES6-Iterator-And-Iterable'
+      ]
+    },
+    {
       title: '基础内容',
       collapsable: false,
       children: [
@@ -64,6 +78,7 @@ function genSidebarJavaScript () {
       children: [
         'DOM-Operation',
         'DOM-More',
+        'DOM-History'
       ]
     },
     {
@@ -71,7 +86,8 @@ function genSidebarJavaScript () {
       collapsable: false,
       children: [
         'Small-and-Chunk-Code',
-        'I-Dont-Know-JavaScript'
+        'I-Dont-Know-JavaScript',
+        'Refactor-JavaScript'
       ]
     }
   ]
@@ -124,7 +140,8 @@ function genSidebarNote (title) {
       children: [
         'Functional-JavaScript',
         'JavaScript-Promise',
-        'Why-Control-Time'
+        'Why-Control-Time',
+        'The-Clean-Coder'
       ]
     }
   ]
