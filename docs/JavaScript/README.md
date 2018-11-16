@@ -37,6 +37,9 @@ JavaScript 非常有趣。如果有机会，我愿意学 Go。
 
 + [最佳实践，使用 let/const](./ES6-Let-and-Const.md)
 + [万物皆不同 - Symbols](./ES6-Symbols.md)
++ [迭代协议](./ES6-Iterator-And-Iterable.md)
++ [异步编程要点](./ES6-Async.md)
++ [Generator](./ES6-Generator.md)
 
 #### 基础内容
 

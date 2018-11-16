@@ -60,7 +60,9 @@ function genSidebarJavaScript () {
       children: [
         'ES6-Let-and-Const',
         'ES6-Symbols',
-        'ES6-Iterator-And-Iterable'
+        'ES6-Iterator-And-Iterable',
+        'ES6-Async',
+        'ES6-Generator'
       ]
     },
     {
@@ -158,6 +160,8 @@ function genSidebarAll (title) {
         'People-In-Konw',
         'Tools-Resource',
         'Free-Book-Resources',
+        'Online-Resources',
+        'Libraries',
         'Summarize-Your-Career'
       ]
     }

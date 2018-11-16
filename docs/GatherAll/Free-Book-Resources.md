@@ -1,4 +1,4 @@
-# 网络书籍资源
+# 网络免费的书籍和视频资源
 
 ## JavaScript 有关
 
@@ -18,8 +18,15 @@
 
 ## 计算机基础
 
+### 书籍资源
+
 [Software Foundations](https://softwarefoundations.cis.upenn.edu/)
 [Programming Languages: Application and Interpretation](http://cs.brown.edu/courses/cs173/2012/book/)
+
+### 视频资源
+
+[Introduction to Operating System - Udacity](https://classroom.udacity.com/courses/ud923)
+
 
 ## 免费电子书下载
 
@@ -27,7 +34,7 @@
 
 [O'reilly出版社免费书籍](http://www.oreilly.com/programming/free/)
 
-# TC39 JavaScript proposals
+## TC39 JavaScript proposals
 
 [ecma262](https://github.com/tc39/ecma262#ecmascript)
 [proposals](https://github.com/tc39/proposals)

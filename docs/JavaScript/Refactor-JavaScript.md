@@ -1,10 +1,16 @@
 # 有关代码重构和整洁之道
 
+TODO:
+
+- [ ] 补充 class、prototype 等相关的
+- [ ] 差错控制
+
 ## 代码层面的整洁之道
 
-这部分内容是多篇文章的总结。参考：
+扩展：
 
 + [clean-code-javascript](https://github.com/ryanmcdermott/clean-code-javascript)
++ [nodebestpractices](https://github.com/i0natan/nodebestpractices)
 
 🍑 <span style="font-size: 18px;font-weight: 700">基本</span>
 
@@ -232,7 +238,17 @@ const lookupTable = {
 }
 
 const queryPolling = type => {
-  lookupTable[type]()
+  lookupTable[type].call(this)
+}
+
+// 正例
+const lookupTable = new Map([
+  ['2m', pollingFor2Min],
+  ['5m', pollingFor5Min],
+  ['9m', pollingFor9Min]
+])
+const queryPolling = type => {
+  lookupTable.get(`${type}`).call(this)
 }
 ```
 
@@ -386,6 +402,10 @@ if (isPlainObject(data)) {
 }
 ```
 
+### 避免纯粹的 for 循环
+
+尽量使用更加语义化的 `map`、`forEach` 替代 `for` 循环，我们一直强调：让代码易读非常重要！(哪怕 `for` 循环在性能表现上稍微好一点，但是 Leave This To Compilers)。
+
 🍒  <span style="font-size: 18px;font-weight: 700">代码层面</span>
 
 ### 避免修改原对象
@@ -443,7 +463,9 @@ function timeLevel (exception) {
 ```
 
 
-🥝 <span style="font-size: 18px;font-weight: 700">并发和错误处理</span>
+🥝 <span style="font-size: 18px;font-weight: 700">异步控制</span>
+
+### 原理 callback hell
 
 ### 避免嵌套 Promise
 
@@ -493,6 +515,43 @@ function printOrder () {
 }
 ```
 
+🍊 <span style="font-size: 18px;font-weight: 700">差错控制</span>
+
+### 使用 Error 对象
+
+使用 *字符串* 或 *简单对象* 作为异常信息没有太多价值<sup>4</sup>。不妨使用 JavaScript 的 `Error` 对象。
+
+```js
+// 反例
+function printOrder () {
+  return new Promise((resolve, reject) => {
+    ...
+    reject({ error: { message: '请检查打印机相关设置' } })
+  })
+}
+
+// 正例
+function printOrder () {
+  return new Promise((resolve, reject) => {
+    ...
+    reject(new Error({ error: { message: '请检查打印机相关设置' } }))
+  })
+}
+```
+
+## 改变观念成为专业人士
+
+1. 让别人读懂你的代码很重要
+
+2. 「如果有坑，别挖」
+
+3. 「“无情” 重构」
+
+
 [1] https://gist.github.com/cjohansen/4135065
+
 [2] http://blog.timoxley.com/post/47041269194/avoid-else-return-early
+
 [3] https://github.com/petkaantonov/bluebird/wiki/Optimization-killers
+
+[4] https://www.bennadel.com/blog/2828-creating-custom-error-objects-in-node-js-with-error-capturestacktrace.htm

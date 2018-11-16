@@ -3,9 +3,10 @@
 TODO:
 
 - [x] WeakSet 和 WeakMap 为什么不是 iterable
-- [] iterator 既是 iterable 的目的何在
-- [] return / throw
-- [] infinite sequences
+- [ ] iterator 既是 iterable 的目的何在
+- [ ] return / throw
+- [ ] infinite sequences
+- [ ] 设计模式中的 iterator 模式
 
 ## Overview
 
@@ -403,7 +404,76 @@ ES6 如此坚持地引入 *迭代协议*，我觉得有以下理由：
 
 ![](http://p3puylt4n.bkt.clouddn.com/consumers_sources.jpg)
 
-+ Data Source - 诸如 String、Array、Map、Set 这样的数据结构作为数据源(即 Iterable)，拥有 `[Symbol.iterator ]` 方法，供迭代协议使用。
++ Data Source(or Data Producer) - 诸如 String、Array、Map、Set 这样的数据结构作为数据源(即 Iterable)，拥有 `[Symbol.iterator ]` 方法，供迭代协议使用。
 + Data Consumers - 诸如 `for...of`、spread operator 等 API，使用 Iterator 获取需要消费的数据。
 
+#### 从 iterator 模式的角度看
+
+在经典的「设计模式」<sup>2</sup>中，iterator 模式(迭代器模式) 是一种 *对象行为型模式的一种*。用来提供一种方法顺序访问一个集合对象(collections)中各个元素，而不用暴露其内部结构。
+
+这种设计模式的关键思想是：**将对集合的迭代从集合中分离出来，并放入 iterator 对象中**。
+
+另外，iterator 和集合是 **耦合** 的，其实现又是 **抽象** 的。表现在：
+
+1. 为迭代不同的数据结构提供了一个统一的接口 (即，支持多态)
+
+2. 支持对单一集合的多种迭代方式(即，实现具体子类 Iterator)
+
+3. 在同一集合上可以有多个遍历。
+
+ES6 中的 iterator 支持上述的 (1)、(2) 两种情况。在具体实现上，ES6 权衡了以下问题：
+
+1. 谁来控制迭代
+
+当由使用者来控制迭代时，该迭代器就称为 external iterator；当由迭代器控制迭代时，该迭代器称为 internal iterator。在 ES6 中，iterator 支持这两类 iterator。
+
+```js
+// internal iterator
+const arr = ['a', 'b']
+for (const iter of arr) {
+  ...
+}
+
+// external iterator
+const arr = ['a', 'b']
+const iterator = arr[Symbol.iterator]()
+iterator.next()
+iterator.next()
+iterator.next()
+```
+
+使用 external iterator 时，使用者必须主动推进迭代器的进程，显式地想迭代器请求下一个元素；而使用 internal iterator，使用者只需提供一个待执行的操作即可(比如，`for...of`)，iterator 即对集合内每个元素执行该操作。
+
+2. 谁来定义遍历算法
+
+集合本身可以定义迭代算法，并在遍历过程中用 iterator 存储当前迭代的状态。这样的 iterator 只是一个 cursor(游标)，仅用来指示当前的状态。使用的时候，这个 cursor 可以作为一个参数调用集合的 `next()` 方法。
+
+iterator 本身可以定义迭代算法。这样，我们就可以满足最开始提到的两点：(1) 为迭代不同的数据结构提供了一个统一的接口；(2) 支持对单一集合的多种迭代方式。但同时，iterator 就会访问集合内的变量(有时候可能是私有的)，这样就会破坏集合的封装性。
+
+ES6 中的 iterator 本身定义了迭代算法。
+
+3. 迭代器的健壮性考量
+
+在迭代一个集合元素的同时更改这个集合是危险的。如果在遍历集合的时候增加或删除聚合元素，可能会导致两次访问同一个元素或者遗漏某个元素。一个简单的临时解决方案是拷贝该集合，然后对该拷贝进行迭代，但一般来说，这样的行为代价太高。
+
+TODO:
+
+- [ ] ES6 如何处理以及例子？无限 sequence?
+
+4. 空迭代器
+
+空迭代器(NullIterator) 是一个退化的 iterator，它可以用来处理边界条件。根据定义，空迭代器总是已经完成了遍历：即，它的 `done` 值总是 `true`。
+
+TODO:
+
+- [ ] ES6 空迭代器的例子
+
+在「设计模式」<sup>2</sup>还涉及到其他一些问题的权衡，这有助于我们去理解 ES6 中 *迭代协议* 的设计。「这即是万物理论」。
+
+#### 一个 “比喻”
+
+## 文献
+
 [1] http://exploringjs.com/es6/ch_iteration.html#sec_plain-objects-not-iterable
+
+[2] Design Patterns - Elements of Reusable Object-Oriented Software
