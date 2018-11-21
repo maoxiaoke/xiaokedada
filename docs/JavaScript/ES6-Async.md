@@ -20,12 +20,17 @@ TODO:
 - [ ] 协程 Coroutine
 - [ ] 并发 Concurrency
 - [ ] 并行 Parallelism
+- [ ] 消费者和生产者问题 (经典的线程同步问题))
 
 ## 进程、线程和 JavaScript 单线程
 
 进程(Process)和线程(Thread)是操作系统概念<sup>1</sup>。Thread 是操作系统配置处理器时间的基本单元；一个或多个 Thread 运行在 Process 的上下文中；Thread 共享内存空间。
 
 系统通过同时运行多个进程或线程，可以实现 *并行计算*(parallel computing)。
+
+## 协程 Coroutine
+
+
 
 
 

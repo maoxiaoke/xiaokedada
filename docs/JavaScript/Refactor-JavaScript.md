@@ -190,21 +190,99 @@ sum(1, 2, 3)
 
 功能不单一的函数将难以重构、测试和理解。
 
-### 函数应该只做一层抽象
+TODO:
 
-当函数的需要的抽象多于一层时，通常意味着函数功能过于复杂，需将其进行分解以提高其可重用性和可测试性。
+- [ ] 如何定义单一职责(即，只做一件事)
+
+<!-- ### 函数应该只做一层抽象
+
+当函数的需要的抽象多于一层时，通常意味着函数功能过于复杂，需将其进行分解以提高其可重用性和可测试性。 -->
 
 ### 移除重复和多余的代码
 
-一定要移除项目中重复和多余的代码。尤其是在任何循环下有重复的代码。
+一定要移除项目中重复和多余的代码。
 
 ### 不要使用标记作为函数参数
 
 这通常意味着函数的单一职责已经被破坏了。这个时候，应当考虑对函数进行再次划分。
 
+```js
+import { isArray } from 'lodash'
+// 反例
+function genIdentifier (comment) {
+  if (isArray(comment)) {
+    return comment.map(item => `${item.id}` + `${item.type}`)
+  } else {
+    return `${comment.id}` + `${comment.type}`
+  }
+}
+
+// 正例
+function genIdentifier (comment) {
+  return `${comment.id}` + `${comment.type}`
+}
+function genIdentifierList (commentList) {
+  return commentList.map(comment => `${comment.id}` + `${comment.type}`)
+}
+```
+
+当然，这有争论。我们当然希望一个函数能够提供完整的功能，这虽然不能覆盖所有的情形，但对于 “小” 函数而言，应该是可取的。
+
+在 [非侵入性地改造函数](### 非侵入性地改造函数) 从业务的角度避免传入一个用于「判断」的 token。
+
 ### 避免副作用
 
 函数式编程具有更干净和便于测试的特点。
+
+### 非侵入性地改造函数
+
+当我们试图向函数传入一个用于「判断」的 token 时，我们应当注意，函数已经违背了 *只做一件事*。
+
+比如，当我们需要为 `userInfo` 添加一道缓存：即如果再次请求同一个用户的信息，就不用重新向服务器发送请求，而直接使用第一次请求的数据返回<sup>5</sup>。
+
+```js
+const renderUser = (userInfo) => {
+  // User representation
+}
+
+// 反例
+const userInfoCache = {}
+const fetchUserInfo = (userId, renderUser) => {
+  if (userInfoCache[userId]) {
+    renderUser(userInfoCache[userId])
+  } else {
+    fetch(`https://api.github.com/users/${ userId }`).then(info => {
+      renderUser(info)
+    })
+  }
+}
+
+// 正例
+const fetchUserInfo = (userId, renderUser) => {
+  fetch(`https://api.github.com/users/${ userId }`).then(info => {
+    renderUser(info)
+  })
+}
+
+const memorizeThunk = (func, reducer) => {
+  const cache = {}
+  return (userId, callback) => {
+    const key = reducer(userId)
+    if (cache[key]) {
+      callback(cache[key])
+    } else {
+      func(key, res => {
+        cache[key] = res
+        callback(res)
+      })
+    }
+  }
+}
+const fetchUserInfoCache = memorizeThunk(fetchUserInfo, (userId) => userId)
+fetchUserInfoCache('maoxiaoke', renderUser)
+```
+
+实际原理还是将函数拆解为更小的「功能单一」的函数。
 
 🍊 <span style="font-size: 18px;font-weight: 700">Control Flow 相关</span>
 
@@ -329,11 +407,9 @@ function queryOrder (existence) {
 
 还是那句话，「It depends」。
 
-### 处理 if...else if...else
+### 当判断条件包含 > 或 <
 
-情况一，当存在 `if...else if...else` 三级条件判断的时候。提前 `return` 可以减少条件语句的嵌套。
-
-```js
+<!-- ```js
 // 反例
 function rateStatus (level) {
   if (level >= 95) {
@@ -355,11 +431,56 @@ function rateStatus (level) {
   }
   return 'COME ON'
 }
-```
+``` -->
 
 ### 封装判断条件
 
+会遇到很多情况，需要 `if` 判断中加入多个判断条件。可以将多个判断条件封装起来 - 尤其是拥有超过 2 个判断条件的情况。
+
+```js
+// 反例
+import { isEmpty } from 'lodash'
+if (order.state === 'CANCEL' && !isEmpty(unprocessedOrderList)) {
+  // Do something
+}
+
+// 正例
+import { isEmpty } from 'lodash'
+const canActivateTone = (order, unprocessedOrderList) => {
+  return order.state === 'CANCEL' && !isEmpty(unprocessedOrderList)
+}
+if (canActivateTone(order, unprocessedOrderList)) {
+  // Do something
+}
+```
+
+以下情形并不考虑在「封装判断条件」之内：
+
+```js
+if (order && order.id) {
+  // Do something
+}
+```
+
+已经有一个提案<sup>6</sup>来支持 `order?.id` 这种写法，但是目前最好的方案是使用 [Lodash](https://lodash.com/) 的 [`get`](https://lodash.com/docs/4.17.11#get) 方法。
+
 ### 不要省略 {}
+
+为了代码 “整洁”，常常一行代码完成 `if` 判断。但是我觉得 `if... else` 配上 `{}`「非常酷」。
+
+```js
+// 反例
+function fetchShopDetail () {
+  if (isInGrey(shopId)) return
+}
+
+// 正例
+function fetchShopDetail () {
+  if (isInGrey(shopId)) {
+    return
+  }
+}
+```
 
 ### 避免无意义的条件判断
 
@@ -402,9 +523,9 @@ if (isPlainObject(data)) {
 }
 ```
 
-### 避免纯粹的 for 循环
+<!-- ### 避免纯粹的 for 循环
 
-尽量使用更加语义化的 `map`、`forEach` 替代 `for` 循环，我们一直强调：让代码易读非常重要！(哪怕 `for` 循环在性能表现上稍微好一点，但是 Leave This To Compilers)。
+尽量使用更加语义化的 `map`、`forEach` 替代 `for` 循环，我们一直强调：让代码易读非常重要！(哪怕 `for` 循环在性能表现上稍微好一点，但是 Leave This To Compilers)。 -->
 
 🍒  <span style="font-size: 18px;font-weight: 700">代码层面</span>
 
@@ -429,6 +550,22 @@ const order = {
 function (order) {
   const newOrder = { ...order, shopId: 'xxx' }
   ...
+}
+
+// 反例
+addCouponInfos (target, source) {
+  return target.map(comment => {
+    comment.extendsInfo = source.filter(coupon => coupon.id === comment.id)[0]
+    return comment
+  })
+}
+
+// 正例
+addCouponInfos (target, source) {
+  return target.map(comment => {
+    const extendsInfo = source.filter(coupon => coupon.id === comment.id)[0]
+    return { ...comment, extendsInfo }
+  })
 }
 ```
 
@@ -465,11 +602,15 @@ function timeLevel (exception) {
 
 🥝 <span style="font-size: 18px;font-weight: 700">异步控制</span>
 
-### 原理 callback hell
+### 远离 callback hell
+
+TODO:
+
+- [ ] Add description and example
 
 ### 避免嵌套 Promise
 
-避免嵌套 Promise。嵌套的 Promise 会导致代码混乱。
+避免嵌套 Promise。嵌套的 Promise 会导致代码混乱<sup>7</sup>。
 
 ```js
 // 反例
@@ -515,6 +656,36 @@ function printOrder () {
 }
 ```
 
+## Promise 的 then 链总该返回什么
+
+Promise 的 then 链如果没有返回 Promise、一般值或者 thenable 的话，会将 `undefined` 作为 resolved 值返回(假设没有任何 catch 捕获到错误)。当排查问题的时候，这样的错误会极难发现。
+
+TODO:
+
+- [ ] Add example
+
+## 不要“吞掉” Error
+
+「Promise 链的最后总以一个 `catch()` 结束」是一个最佳实践。但设计一个基于 Promise 的函数时，应该考虑的是让函数自己进行差错控制处理呢，还是抛错。绝不要“吞掉”错误。
+
+```js
+// 反例
+function printOrderByTpl (printers) {
+  return Promise.all(printers.map(p => {
+    return printOrder(p)
+  }))
+  .catch(e => e)
+}
+
+// 可能是正例
+function printOrderByTpl (printers) {
+  return Promise.all(printers.map(p => {
+    return printOrder(p)
+  }))
+  .catch(e => Promise.reject(e))
+}
+```
+
 🍊 <span style="font-size: 18px;font-weight: 700">差错控制</span>
 
 ### 使用 Error 对象
@@ -539,13 +710,31 @@ function printOrder () {
 }
 ```
 
-## 改变观念成为专业人士
+## 改变认知，成为专业人士
 
 1. 让别人读懂你的代码很重要
 
 2. 「如果有坑，别挖」
 
 3. 「“无情” 重构」
+
+## SOLID
+
+来自书本「Agile Software Development: Principles, Patterns, and Practices」- Martin, Robert C
+
+## GRASP
+
+来自书本「Applying UML and Patterns」- Craig Larman
+
+https://www.cnblogs.com/pangjianxin/p/7928083.html
+
+## Don't repeat yourself - DRY
+
+## KISS
+
+## Inversion of control - 控制反转
+
+
 
 
 [1] https://gist.github.com/cjohansen/4135065
@@ -555,3 +744,10 @@ function printOrder () {
 [3] https://github.com/petkaantonov/bluebird/wiki/Optimization-killers
 
 [4] https://www.bennadel.com/blog/2828-creating-custom-error-objects-in-node-js-with-error-capturestacktrace.htm
+
+[5] http://taobaofed.org/blog/2017/01/05/writing-readable-code/
+
+[6] https://github.com/tc39/proposal-optional-chaining
+
+[7] http://taoofcode.net/promise-anti-patterns/
+
