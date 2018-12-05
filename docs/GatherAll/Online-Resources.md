@@ -12,6 +12,8 @@
 
 [Mostly adequate guide to FP](https://github.com/MostlyAdequate/mostly-adequate-guide)
 
+[Functional-Light-JS](https://github.com/getify/Functional-Light-JS)
+
 ## 英语学习
 
 [如何高效学习英语](https://byoungd.gitbook.io/english-level-up-tips/)

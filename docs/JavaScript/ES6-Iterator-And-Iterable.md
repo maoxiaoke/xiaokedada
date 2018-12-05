@@ -374,7 +374,7 @@ function iterateOver (...args) {
 
 ```js
 const arr = []
-const iter = arr[Symbol.iterator]()]
+const iter = arr[Symbol.iterator]()
 iter[Symbol.iterator]() === iter
 /*
 true
