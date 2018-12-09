@@ -41,6 +41,14 @@ JavaScript 非常有趣。如果有机会，我愿意学 Go。
 + [异步编程要点](./ES6-Async.md)
 + [Generator](./ES6-Generator.md)
 
+#### Light FP
+
+和 FP 有关的内容。
+
++ [Overview](./Light-FP-Overview.md)
++ [Compose](./Light-FP-Compose.md)
++ [Container and Functor](./Light-FP-Container-And_Functor.md)
+
 #### 基础内容
 
 这小节主要是存放一些基础的学习内容，不会有太大理解难度。

@@ -14,6 +14,18 @@
 
 [Functional-Light-JS](https://github.com/getify/Functional-Light-JS)
 
+函数式涉及到的一些其他领域：
+
+- category theory - 范畴学
+- set theory - 集合论
+- lambda 演算
+
+范畴学
+
+[Category Theory for Programmers: The Preface](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
+
+[Haskell/Category theory](https://en.wikibooks.org/wiki/Haskell/Category_theory)
+
 ## 英语学习
 
 [如何高效学习英语](https://byoungd.gitbook.io/english-level-up-tips/)

@@ -66,6 +66,14 @@ function genSidebarJavaScript () {
       ]
     },
     {
+      title: 'Light FP',
+      collapsable: false,
+      children: [
+        'Light-FP-Overview',
+        'Light-FP-Container-And_Functor'
+      ]
+    },
+    {
       title: '基础内容',
       collapsable: false,
       children: [

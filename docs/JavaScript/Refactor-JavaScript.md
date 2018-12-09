@@ -765,6 +765,12 @@ https://www.cnblogs.com/pangjianxin/p/7928083.html
 
 ## Inversion of control - 控制反转
 
+## loose coupling high cohesion - 高耦合低内聚
+
+## YAGNI(ya ain't gonna need it) - 你不会用到它的
+
+## Principle of least surprise - 最小意外原则
+
 
 
 
