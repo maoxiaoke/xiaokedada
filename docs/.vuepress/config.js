@@ -70,6 +70,7 @@ function genSidebarJavaScript () {
       collapsable: false,
       children: [
         'Light-FP-Overview',
+        'Light-FP-Categries',
         'Light-FP-Container-And_Functor'
       ]
     },
