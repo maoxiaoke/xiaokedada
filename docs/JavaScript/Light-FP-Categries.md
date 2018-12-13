@@ -24,7 +24,7 @@
 
 `𝑓` 表示集合 A 到集合 B 的函数。典型的集合和函数的关系如下：
 
-<img src="https://raw.githubusercontent.com/maoxiaoke/xiaokedada/master/assets/function-sets.png" style="margin: 0 auto;display: block" />
+<p style="text-align: center"><img src="https://raw.githubusercontent.com/maoxiaoke/xiaokedada/master/assets/function-sets.png" /></p>
 
 上图表达的一个这样的函数关系，即
 
@@ -38,7 +38,7 @@
 
 Let's Go A Litte Farther! 若还有函数关系：`ℎ : C → D`。
 
-<img src="https://github.com/maoxiaoke/xiaokedada/blob/master/assets/function-sets-02.png?raw=true" style="margin: 0 auto;display: block" />
+<p style="text-align: center"><img src="https://github.com/maoxiaoke/xiaokedada/blob/master/assets/function-sets-02.png?raw=true" /></p>
 
 那么：
 
@@ -50,11 +50,11 @@ Let's Go A Litte Farther! 若还有函数关系：`ℎ : C → D`。
 
 <p style="text-align: center">1<sub>A</sub>: A → A</p>
 
-单位函数可以作为“组合”操作的“单元”(unit)。即：
+单位函数可以作为“组合”操作的“单位元”(unit)。即：
 
 <p style="text-align: center">𝑓∘1<sub>A</sub> = 𝑓 = 1<sub>B</sub>∘𝑓</p>
 
-## 范畴的定义
+### 范畴
 
 从数据的角度，范畴由以下数据组成：
 
@@ -89,7 +89,7 @@ Let's Go A Litte Farther! 若还有函数关系：`ℎ : C → D`。
 
 称为 A 的 identity arrow。
 
-+ 满足结合率
++ 满足结合率(Associativity)
 
 <p style="text-align: center">(ℎ∘𝑔)∘𝑓 = ℎ∘(𝑔∘𝑓)</p>
 
@@ -106,3 +106,7 @@ Let's Go A Litte Farther! 若还有函数关系：`ℎ : C → D`。
 [1] Category Theory (second Edition) - Steve Awodey
 
 [2] [高级范畴学](http://www.tup.tsinghua.edu.cn/upload/books/yz/049831-01.pdf)
+
+著作：
+
+- [Categories for the Working Mathematician]() - Saunders Mac Lane

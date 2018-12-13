@@ -1,9 +1,14 @@
-# 让人头疼的函数内this的指向
+# this 的挑战
 
-JavaScript 颇让费解的东西 this 为何出现呢，机制是**提供更优雅的方式来隐式地“传递”一个对象引用**。对于 this 的很多误解和使用，建议收看 [You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS)。本文主要是在它的基础上整合的内容。
+TODO:
 
-每个函数在被调用时都会自动取得两个特殊的变量: this 和 arguments。需要说明的是，this 不是编写时绑定，而是**运行时**绑定。它依赖于函数调用的上下文条件。this 绑定与函数声明的位置没有任何关系，而与函数被调用的方式紧密相连。
+- [ ] why this
 
+## Overview
+
+JavaScript 颇让费解的东西 this 为何出现呢，机制是 **提供更优雅的方式来隐式地“传递”一个对象引用**。
+
+每个函数在被调用时都会自动取得两个特殊的变量: this 和 arguments。需要说明的是，this 不是编写时绑定，而是 **运行时** 绑定。它依赖于函数调用的上下文条件。this 绑定与函数声明的位置没有任何关系，而与函数被调用的方式紧密相连。
 
 首先，提到台面上来。**this 是一个完全根据调用点(call-site)来为函数调用建立绑定。**
 
@@ -11,7 +16,7 @@ JavaScript 颇让费解的东西 this 为何出现呢，机制是**提供更优�
 
 决定 this 的指向有四种规则。
 
-## 默认绑定 -- Default binding
+## 默认绑定
 
 这种 this 规则是在没有其他规则适用情况下的默认规则。
 
@@ -29,9 +34,7 @@ foo() 被一个直白的，毫无修饰的函数引用(即 foo，对于命名函
 
 > 如果 strict mode 在这里生效，那么对于*默认绑定*来说全局对象是不合法的，所以 this 将被设置为 undefined。
 
----
-
-## 隐式绑定 -- Implicit Binding
+## 隐式绑定
 
 第二种规则是考虑**调用点是否有一个上下文对象(context object)**。
 
@@ -50,7 +53,7 @@ foo() 被声明然后作为引用属性添加到 obj。调用点使用 obj 这�
 
 **敲黑板，划重点了**
 
-### 隐式丢失 -- Implicitly Lost
+### 绑定丢失
 
 当一个 隐式绑定丢失了它的绑定，这通常意味着它会退回到 默认绑定。
 
@@ -89,9 +92,8 @@ doFoo( obj.foo ); // "oops, global"
 
 和上面的例子一致，fn 不过是 foo 的另一个引用，所以结果和上面的例子一样。
 
----
 
-## 显式绑定 -- Explicit Binding
+## 显式绑定
 
 如果你想强制一个函数调用使用某个特定对象作为 this 绑定，具体地说，函数拥有 `call()` 和 `apply()` 方法，它们提供一些特殊的功能。你创建的所有函数，都可以访问 call() 和 apply()。
 
@@ -139,7 +141,7 @@ setTimeout( function () {
 }, 100 ); // "oops, global"
 ```
 
-### 硬绑定 -- Hard Binding
+### Hard Binding
 
 Hard binding 是 明确绑定 的一个变种。
 
@@ -229,9 +231,7 @@ var a = "oops, global"; // `a` 也是一个全局对象的属性
 setTimeout( obj.foo.bind(obj), 100 ); // "oops, global"
 ```
 
----
-
-## new 绑定 -- new Binding
+## new 绑定
 
 这是最后一种 this 绑定规则。在 JavaScript 中，“构造器”仅仅是一个函数，也叫做构造函数。不依附于类，也不初始化一个类，甚至都不是一种特殊的函数种类。本质是一般的函数，只是被使用 `new` 来调用时改变了行为。
 
@@ -249,8 +249,6 @@ function foo(a) {
 var bar = new foo( 2 );
 console.log( bar.a ); // 2
 ```
-
----
 
 ## 四种规则的顺序
 
@@ -271,13 +269,9 @@ var bar = obj1.foo()
 var bar = foo()
 ```
 
----
+## 在闭包中使用 this
 
-## 特殊的 this
-
-### 在闭包中使用 this
-
-匿名函数的执行环境具有全局性，因此其 this 对象**通常**指向 global 对象。
+匿名函数的执行环境具有全局性，因此其 this 对象 **通常** 指向 global 对象。
 
 ```js
 var a = 0;
@@ -350,7 +344,7 @@ obj.foo()(); // 2
 
 这似乎是不错的解决方案，但都是为了逃避 this 而非接受它。
 
-### IIFE 中使用 this
+## IIFE 中使用 this
 
 通常说，IIFE 中的 this 指向 global 对象。下面是一个非常简单的 IIFE 函数。
 
@@ -377,7 +371,7 @@ foo();
 
 很浅显了吧，非常直白的 默认绑定。
 
-### 传递 null 或 undefined
+## 传递 null 或 undefined
 
 如果你传递 null 或 undefined 作为 call、apply 或 bind 的 this 绑定参数，那么这些值会被忽略掉，取而代之的是 默认绑定 规则将适用于这个调用。
 
@@ -389,43 +383,88 @@ var a = 2;
 foo.call( null ); // 2
 ```
 
-### 箭头函数
+### 什么时候需要传递 null 或 undefined
 
-ES6 的箭头函数和上述四种规则不同的是，**箭头函数从封闭它的(函数或全局)作用域采用 this 绑定。**
+一种常见的做法是使用 `apply()` 来 “展开” 一个数组，并当做参数传入一个函数。举个例子，`Math.prototype.max` 不支持数组作为参数传入，但既然我们不关心 `this` 的话，将 `null` 作为一个占位符可能是个不错的选择。
 
-最常见的用法是用于回调。
+```js
+const numbers = [5, 6, 2, 3, 7]
+Math.max.apply(null, numbers)
+
+// ES6
+Math.max(...numbers)
+```
+
+在 ES6 中可以使用 spread(`...`) 运算符规避这种写法。
+
+另外一种情况是我们使用 `bind()` 来实现函数的柯里化，可以将 `null` 作为一个占位符传递。
+
+```js
+function sum (a, b) {
+    return a + b
+}
+const half = sum.bind(null, 2)
+half(3) // 5
+
+// 正常的 柯里化 函数
+const sum = b => a => a + b
+```
+
+上面的这些做法都可能会产生副作用。比如在函数内确实使用 `this`，我们能否保证函数内的 `this` 正常使用呢。答案是否定的。更安全的做法是传入一个 “特殊” 的对象，就算是函数内的 `this` 绑定到这个对象，也不会对我们的程序产生什么可怕的破坏力。因为 `this` 的使用都会限制在这个空对象中，从而不会对全局的对象产生任何印象。
+
+```js
+// 这是我们的安全对象
+const ø = Object.create(null)
+
+const half = sum.bind(ø, 2)
+```
+
+## 不要绑得太紧
+
+当我们使用 `bind` 进行强制 hard binding 时，这意味着无法再使用隐式绑定或显式绑定来修改 `this`。
 
 ```js
 function foo() {
-    setTimeout(() => {
-        // 这里的 `this` 是词法上从 `foo()` 采用
-    console.log( this.a );
-    },100);
+    return this.a
 }
-var obj = {
-    a: 2
-};
-foo.call( obj ); // 2
+const objA = { a: 'a' }
+const objB = { a: 'b' }
+const bar = foo.bind(objA)
+bar()   // 'a'
+
+bar.call(objB)  // 'a'
 ```
 
-箭头函数提供除了使用 `bind()` 外，另外一种在函数上来确保 this 的方式。但是这种写法和我们上面提到的 `self = this` 并无二致。也就是说，上面的代码和下面的代码效果一致:
+这种行为表现得有点太过强硬了。我们可以实现一种稍微 “软” 一点的绑定。
+
+```js
+Function.prototype.softBind = function (obj, ...keys) {
+    const fn = this
+    const curried = keys
+    const bound = function (...args) {
+        return fn.apply(
+            (!this || this === (window || global)) ? obj : this,
+            curried.concat(args)
+        )
+    }
+    bound.prototype = Object.create(fn.prototype)
+    return bound
+}
+```
+
+看一下这个函数的功能：
 
 ```js
 function foo() {
-    var self = this;
-    setTimeout(function () {
-        console.log(self.a);
-    },100);
+    return this.a
 }
-var obj = {
-    a: 2
-};
-foo.call( obj ); // 2
+const objA = { a: 'a' }
+const objB = { a: 'b' }
+const bar = foo.softBind(objA)
+bar()   // 'a'
+
+bar.call(objB)  // 'b'
 ```
-
-没啥区别，对吧。所以，总的来说，都和这四种规则分不开。
-
----
 
 ## call、apply 和 bind
 
@@ -485,7 +524,41 @@ console.log(foo.bind(obj,{name:'yuer'})); //[Function: bound foo]
 
 这也就解释了我们上面提到的 *call() 和 apply() 无法解决隐式绑定丢失的问题*，就是因为要求返回的是一个函数，而 `bind()` 正好有这个功能。
 
----
+## 箭头函数
+
+ES6 的箭头函数和上述四种规则不同的是，**箭头函数从封闭它的(函数或全局)作用域采用 this 绑定。**
+
+最常见的用法是用于回调。
+
+```js
+function foo() {
+    setTimeout(() => {
+        // 这里的 `this` 是词法上从 `foo()` 采用
+    console.log( this.a );
+    },100);
+}
+var obj = {
+    a: 2
+};
+foo.call( obj ); // 2
+```
+
+箭头函数提供除了使用 `bind()` 外，另外一种在函数上来确保 this 的方式。但是这种写法和我们上面提到的 `self = this` 并无二致。也就是说，上面的代码和下面的代码效果一致:
+
+```js
+function foo() {
+    var self = this;
+    setTimeout(function () {
+        console.log(self.a);
+    },100);
+}
+var obj = {
+    a: 2
+};
+foo.call( obj ); // 2
+```
+
+没啥区别，对吧。所以，总的来说，都和这四种规则分不开。
 
 ## new 的四个步骤
 
@@ -614,7 +687,7 @@ var per = objectFac(Fun,'yuer');
 console.log(per);
 ```
 
-参考
+## Reference
 
 + 《You Don't Know JS》
 + 《JavaScript 高级程序设计》

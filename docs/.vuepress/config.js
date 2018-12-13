@@ -71,6 +71,7 @@ function genSidebarJavaScript () {
       children: [
         'Light-FP-Overview',
         'Light-FP-Categries',
+        'Light-FP-Compose',
         'Light-FP-Container-And_Functor'
       ]
     },

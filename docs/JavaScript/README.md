@@ -46,6 +46,7 @@ JavaScript 非常有趣。如果有机会，我愿意学 Go。
 和 FP 有关的内容。
 
 + [Overview](./Light-FP-Overview.md)
++ [范畴学基础理论](./Light-FP-Categries.md)
 + [Compose](./Light-FP-Compose.md)
 + [Container and Functor](./Light-FP-Container-And_Functor.md)
 
