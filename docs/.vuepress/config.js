@@ -59,6 +59,7 @@ function genSidebarJavaScript () {
       collapsable: false,
       children: [
         'ES6-Let-and-Const',
+        'ES6-Class',
         'ES6-Symbols',
         'ES6-Iterator-And-Iterable',
         'ES6-Async',
