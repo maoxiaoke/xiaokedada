@@ -9,7 +9,7 @@ TODO:
 
 ## Overview
 
-下面是一个最简单的 superClass `Person` 和 class `Empolyee`：
+下面是一个最简单的 class `Person` 和 derived class `Empolyee`：
 
 ```js
 class Person {
@@ -43,7 +43,7 @@ class Employee extends Person {
 typeof Person // 'function'
 ```
 
->「没什么大不了的东西」似乎看上去是这样，但我往往不敢这么描述。如果某些看上去很简单的东西，How about diving deeper?
+>「没什么大不了的东西」似乎看上去是这样，但我往往不敢这么描述。如果某些看上去很简单的东西，How about diging deeper?
 
 ### Can't invoke via a function call
 
@@ -148,13 +148,50 @@ const me = new Person('xiaoke')
 
 en~~~，应该很简单。`Object.prototype` 是所有对象的 “终点”。
 
+#### 继承同样是通过 “关联” 建立关系的
+
+我们来看一个继承的例子：
+
+```js
+function Person (name) {
+  this.name = name
+}
+Person.prototype.toString = function () {
+  return `${ this.name }`
+}
+
+function Empolyee (name, title) {
+  Person.call(this, name)
+  this.title = title
+}
+
+Empolyee.prototype = new Person() // A
+Empolyee.prototype.constructor = Employee
+
+const me = new Empolyee('xiaoke', 'JavaScript Developer')
+```
+
+上面代码的 “A 行” 的表现不尽人意。如果 “构造” 函数 `Person()` 有副作用，就会影响到 `Employee` 的 “实例”。我们可以使用 `Object.create()` 代替。
+
+```js
+Empolyee.prototype = Object.create(Foo.prototype) // A
+```
+
+最好的做法是 使用 `setPrototypeOf` 直接修改 `Bar.prototype`。
+
+```js
+Object.setPrototypeOf(Empolyee.prototype, Person.prototype)
+```
+
+但无论上述哪种方式，意思都表示：**创建新的(替换旧的) Empolyee.prototype，并把它关联到 Person.prototype**。
+
 ### new、constructor、实例等概念隐藏了 [[Prototype]] 的真实
 
 在知道 JavaScript 真正的 OOP 方式是通过 “对象关联” 而非 Class 中描述的所有特性的 “拷贝”。我们不禁要思考：是什么导致 JavaScript 的 OOP 朝着 “模拟” Class 进行发展的。
 
 结论是：函数的 `prototype`。所有的函数都默认拥有一个名为 `prototype` 的属性，指向 `函数.prototype`，同时在 “prototype chain” 中占据一个位置。
 
-有哪些模糊了 JavaScript 的 OOP 的真实呢？
+有哪些概念模糊了 JavaScript 的 OOP 的真实呢？
 
 1. “构造” 函数的首字母大写命名
 
@@ -169,16 +206,16 @@ const me = new Person ()
 
 上面的代码中，看到了关键字 `new`，另外我们看上去是代码执行了 “类的构造函数”。在传统的面向 Class 语言中，两者紧密结合。
 
-似乎，我们通过这两者 “构建了 Class 的实例”。这种曲解的理解是不对的，`new` 只是 **间接** 地建立了两个对象的 **关系**。只有 `new` 调用的函数，我们才亲切地成为 “构造函数”。就是说，`new` 割断了对象原本的 *关联关系*(一般情况下，是 `Object.prototype`)，建立了于另一个对象 `构造函数.prototype` 的 *关联关系*。
+似乎，我们通过这两者 “构建了 Class 的实例”。这种曲解的理解是不对的，`new` 只是 **间接** 地建立了两个对象的 **关系**。就是说，`new` 割断了对象原本的 *关联关系*(一般情况下，是 `Object.prototype`)，建立了于另一个对象 `构造函数.prototype` 的 *关联关系*。
 
-我们摘录 `new` 四个步骤：
+只有 `new` 调用的函数，我们才亲切地成为 “构造函数”。我们摘录 `new` 四个步骤：
 
 + 一个全新的对象被构建
 + 这个新构建的对象会被接入原型链
 + 新构建的对象被设置为函数调用的 this 绑定
 + 除非函数返回一个它自己的其他对象，否则这个被 new 调用的函数将自动返回这个新构建的对象
 
-还要一种直接建立两个对象之间的联系的方式是：`Object.create()`。
+还要一种直接建立两个对象之间的 *关联关系* 的方式是：`Object.create()`。
 
 3. “虚假” 的 constructor
 
@@ -263,9 +300,17 @@ Object.defineProperty(Foo.prototype, 'constructor', {
 const me = new Person('xiaoke')
 ```
 
-4. ES6 中 Class 关键词将这一行为推向深渊
+4. ES6 Class 的彻底偏航
 
-ES6 中通过 `class` 关键字将这一行为推向了深渊。我们会毫不犹豫地将 ES6 Class 的行为和传统的 Class 行为联系到一起，无法窥探到 JavaScript OOP 的本质。
+ES6 中通过 `class` 关键字将这一行为推向了深渊。我们会毫不犹豫地将 ES6 Class 的行为和传统的 Class 行为联系到一起，从而再也不容易窥探到 JavaScript OOP 的本质。
+
+从另一方面来考虑，ES6 Class 并非一无是处。
+
+即，**ES6 Class 越来越 “近似类”了**。
+
+> 既然已经走偏，不如彻底偏航。
+
+是的，我们无法回到 1995 年(JavaScript 诞生的年份)，正如 JavaScript 无法回头。既然如此，何不抬头向前看。随着 ES6 Class 新特性的补充和完善，或许有那么一天，我们不必去深究隐藏在 ES6 Class 下的那一头巨大的 “猛兽”。
 
 ### me 和 Person.prototype 是一种 “委托” 的关联关系
 
@@ -330,10 +375,23 @@ class A {
   constructor() {}
 }
 class B extends A {
-  constructor() {
-    super()
+  constructor(...args) {
+    super(...args)
   }
 }
+```
+
+#### 覆盖 constructor 的结果
+
+值得一提的是，和 ES6 之前的方式一样，我们可以显式覆盖 `constructor` 的结果。
+
+```js
+class Person {
+  constructor() {
+      return Object.create(null);
+  }
+}
+const me = new Person()
 ```
 
 ### static
@@ -404,21 +462,146 @@ class Person {
 }
 ```
 
-### Getter 和 Setter
+## ES6 Class 继承
+
+在 ES6 Class 继承中，我们会多认识 `super` 和 `extends` 两个关键字。例子如下：
 
 ```js
 class Person {
   constructor(name) {
     this.name = name
   }
-  get personName () {
-    return this.name
+  static create (...args) {
+    return new this (...args)
   }
-  set personName (name) {
+  toString () {
+    return `${ this.name }`
+  }
+}
+
+class Employee extends Person {
+  constructor(name, title) {
+    super(name)
+    this.title = title
+  }
+  toString() {
+    return `${ super.toString() } - ${ this.title }`
+  }
+}
+
+const me = new Employee('xiaoke', 'JavaScript Developer')
+```
+
+`[[Prototype]]` 关系图如下图所示：
+
+![](https://github.com/maoxiaoke/xiaokedada/blob/master/assets/subclass-prototype.png?raw=true)
+
+### 子类的 [[Prototype]] 指向 “父类”
+
+这一点和 ES6 之前的有点不同。同时这一点也导致 “父类” 的 static 成员函数会被接入原型链。
+
+```js
+const me = Employee.create('xiaoke', 'JavaScript Developer')
+me.toString() // "xiaoke - JavaScript Developer"
+```
+
+### super
+
+从上面的例子中，我们可以看到 `super` 的两种使用方式。
+
+1. 用在 `constructor` 中，`super` 指代 “父类” 的 “构造函数”
+
+这种情况下，`super()` 就等同于调用 `new Person()`。千万不要误以为的是 `super` 和 `Person` 是等价的。也就是说，在 “子类” 的 “构造函数” 中，`super.prototype` 是无效的。
+
+还需要讲解的一点是：在 “子类” 的 “构造函数” 中，在未调用 `super()` 之前，无法访问 `this`。这么做是有一定道理的。比如：
+
+```js
+class Person {
+  constructor(name) {
     this.name = name
   }
 }
+
+class PolitePerson extends Person {
+  constructor(name, title) {
+    this.greeting() // 这是不被允许的
+    super(name)
+  }
+  greeting () {
+    console.log('Hello You!')
+  }
+}
+const me = new Employee('xiaoke', 'JavaScript Developer')
 ```
+
+假设某一天，我们需要对 `greeting()` 进行修改。
+
+```js
+greeting () {
+  console.log(`Hello ${ this.name }`) // 可是这个时候，this.name 还未定义
+}
+```
+
+为了避免这样的陷阱，**强制在 “构造函数” 中使用 `this`, 就需要先调用 `super()`**。
+
+2. 用在成员 `prototype` 方法中，`super` 指代 “父类.prototype”
+
+这种情况，可以使用代码类比 `super` 的效果。
+
+```js
+const homeObject = Employee.prototype
+const superObject = Object.getPrototypeOf(homeObject)
+const superMethod = superObject.toString()
+const result = superMethod.call(this)
+```
+
+也就是说，当调用 `super.toString()` 时，使用的是当前的 `this` (指向 `me`)。
+
+上诉代码似乎也表明一个事实：`super` 并非和 `this` 一样 “动态绑定”。在内部有一个 `[[HomeObject]]` 记录着使用了 `super` 的函数的环境，在声明时 `[HomeObject]]` 就已经确定了，[也无法再次被修改](http://www.ecma-international.org/ecma-262/6.0/#sec-function-environment-records)。
+
+### extends
+
+`extends` 语句恐怕是 ES6 Class 中最为闪光的一点了。
+
+`Employee extends Person` 即是说：将 `Employee.prototype` 和 `Person.prototype` “关联” 起来。
+
+不止是如此，`extends` 让我们(终于)有能力扩展内建对象的能力了。
+
+#### “父类化” ES5 的内建对象
+
+ES6 之前，很多内置的对象比如 `Array`、`Function` 等等都无法 [“父类化”](http://speakingjs.com/es5/ch28.html)。比如：
+
+```js
+function myArray (len) {
+  Array.call(this, len)
+}
+myArray.prototype = Object.create(Array.prototype)
+```
+
+#### ES6 的可能性
+
+ES5 Class 弥补了这方面的缺陷。
+
+```js
+class myArray extends Array {
+  constructor (...args) {
+    super(...args)
+  }
+  first () { return this[0] }
+  last () { return this[this.length] }
+}
+```
+
+## ES Next
+
+### proposal-class-fields
+
+
+## 其他概念
+
+### new.target
+
+### Symbol.species
 
 ## Class 单例模式
 

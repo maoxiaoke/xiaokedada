@@ -4,6 +4,14 @@ tips:
 
 1. 抛开 js 的 `map` 和 `reduce` 来看 FP，只用其表达意义。
 
+## FP versus OOP and Others
+
+1. 与 Imperative programming 的区别
+
+IP: 命令电脑「要做什么」
+
+FP: 通过函数描述问题「是什么」
+
 ## Type Signatures - 类型签名
 
 - Hindley-Milner 类型签名
@@ -35,3 +43,8 @@ tips:
 ## Monad
 
 1. 什么是 Monad
+
+
+## Lazy
+
+## Referential Transparency
