@@ -83,14 +83,17 @@ function timeLevel (exception) {
 3. 能用「缩略词」明确表达含义的，尽量使用「缩略词」。
 4. 函数名尽可能使用一些常见的约定。
 
-| 动词 | 含义 |
-| :-----: | :-----: |
+| 动词 | 含义 | 举例  |
+| :-----: | :-----: | :-----: |
 | fetch | 获取 API 数据 |
 | is    | 判断某一条件 |
 | can   | 表达某种能力 |
 | set   | 赋值        |
+| edit  | 编辑        | editPanleVisible |
 | register | 在某处注册函数 |
 | dispatch | 分发某一操作 |
+| hidden  | 隐藏      | hiddenPanle |
+| gotIt   | 知道了    |
 
 5. 需要为 `this` 更名的地方，使用 `context`，而不是 `that` 或 `_this`<sup>1</sup>。
 

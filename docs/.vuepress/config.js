@@ -8,6 +8,7 @@ module.exports = {
   head: [
     ['link', { rel: 'icon', href: `/favicon.png` }],
   ],
+  plugins: ['@vuepress/back-to-top'],
   // theme: 'vue',
   themeConfig: {
     repo: 'maoxiaoke/xiaokedada',
@@ -154,7 +155,8 @@ function genSidebarNote (title) {
         'Functional-JavaScript',
         'JavaScript-Promise',
         'Why-Control-Time',
-        'The-Clean-Coder'
+        'The-Clean-Coder',
+        'Real-World-Haskell'
       ]
     }
   ]

@@ -12,6 +12,15 @@ IP: 命令电脑「要做什么」
 
 FP: 通过函数描述问题「是什么」
 
+举个 Haskell 的例子：
+
+```haskell
+factorial :: Integer -> Integer
+factorial n = product [1..n]
+```
+
+描述问题是什么：阶乘就是 1 到 n 的乘积，即数学定义。
+
 ## Type Signatures - 类型签名
 
 - Hindley-Milner 类型签名
