@@ -648,7 +648,7 @@ data Bool = False | True
 ```
 
 + data - 表明要定义一个新类型
-+ Bool(= 的左边) - 表明定义的新类型的名称
++ Bool(= 的左边) - type constructor
 + = 右边 - value constructor
 
 类型名和 value constructor 都需要大写。
@@ -727,7 +727,7 @@ type constructor，取类型作为参数，产生新类型。
 data Maybe a = Nothing | Just a
 ```
 
-+ Maybe 是 type constructor
++ Maybe 是 type constructor。有点类似于 泛型，对具体的类型一无所知
 + a 是类型参数
 + 把 Char 交给 May，就可以得到一个 Maybe Char 的类型。Just 'a' 的类型就是 Maybe Char。
 
@@ -740,5 +740,227 @@ ghci> :t Nothing
 Nothing :: Maybe a
 ```
 
+Instance
+
+(不要和传统 OOP 概念中类的实例混淆)。Int 类型就是 Eq 类型类中色一个实例。
+
+比如我们想要对 *相同的人* 进行比较：我们就可以直接 driving (Eq)，之后就可以用 == 或 /= 来判断它们是否相等了。否则，就需要自己写函数去来判断。
+
+```haskell
+data Person = Person { name :: String
+                     , age :: Int
+                     } deriving (Eq, Show)
+```
+
+测试一下：
+
+```bash
+ghci> let xiaoke1 = Person(name = "xiaoke", age = 18)
+ghci> let xiaoke2 = Person(name = "xiaoke", age = 18)
+ghci> xiaoke1 == xiaoke2
+True
+```
+
+同理，Person 也可以将其应用到所有在类型声明中用到了 Eq 类约束的函数，比如 elem。
+
+```bash
+ghci> let boys = [xiaoke1, xiaoke2]
+ghci> xiaoke1 `elem` boys
+True
+```
 
 
+Type synonyms
+
+在写类型名的时候，[Char] 和 String 等价，可以互换。这就是类型别名 - 就是个不用的名字而已。
+
+```haskell
+type String = [Char]
+```
+
+类型别名也可以有参数。
+
+```haskell
+type AssocList k v = [(k, v)]
+```
+
+创建 Typeclasss
+
+Typeclass 的目的之一就是抽象化操作。比如，如果我们不 Person 类型不 driving (Eq)，就需要自己写函数来实现相等性。
+
+```haskell
+data Person = Person { name :: String
+                     , age :: Int
+                     }
+eqPerson :: Person -> Person -> Bool
+...
+```
+
+这样我们倒不如定义个 Typeclass。
+
+```haskell
+class Eq a where
+    (==) :: a -> a -> Bool
+    (/=) :: a -> a -> Bool
+    x == y = not (x /= y)
+    x /= y = not (x == y)
+```
+
++ a 是类型变量，是任何我们在定义 instance 时的类型，也不一定要叫 a
+
+然后，我们打算手动(而不是通过 driving (Eq) 的方式)创建一个 Instance。定义类型如下：
+
+```haskell
+data Color = Red | Yellow | Green
+instance Eq Color where
+    Red == Red = True
+    Green == Green = True
+    Yellow == Yellow = True
+    _ == _ = False
+```
+
++ instance Eq 即表示 Eq 的实例
++ a 被替换成具体类型 Color
++ 由于 == 是用 /= 来定义的，同样的 /= 也是用 == 来定义。所以我们只需要在 instance 定义中复写其中一个就好了
++ 这叫 minimal complete definition
+
+定义 typeclass 的 subclass
+
+比如：
+
+```haskell
+class (Eq a) => Num a where
+...
+```
+
++ subclass 的实质是添加 class constraints
++ 这里，是为 `class Num a where` 中类型变量 a 添加的限制：在某个类型可以被视作 Number 之前，必须先能被比较相不相等
+
+Maybe 怎么办呢。特别之处在于它是一个 type constructor。单 Maybe a 是一个确切地类型。
+
+```haskell
+instance Eq (Maybe m) where
+    Just x == Just y = x == y
+    Nothing == Nothing = True
+    _ == _ = False
+```
+
+不过仍然有个问题，是我们无法保证 Maybe 里面装的可以进行 Eq，所以需要加上限制。
+
+```haskell
+instance (Eq m) => Eq (Maybe m) where
+    Just x == Just y = x == y
+    Nothing == Nothing = True
+    _ == _ = False
+```
+
+最后一件事，如果你想看看一个 typeclass 定义了哪些 instance。`:info` 也可以查找类型和 type constructor 的信息。
+
+```bash
+ghci> :info Num
+
+ghci> :info Maybe
+```
+
+yes-no typeclass
+
+这一个 typeclass 是一个这样的来历：对于 JavaScript 这类弱类型的语言而言，`''`、`false`、`0` 这一类都称为 “假值”，yes-no typeclass 就是模拟这样行为的。
+
+先声明一个 typeclass。
+
+```haskell
+class YesNo a where
+    yesno :: a -> Bool
+```
+
+接下来定义一些 instance。
+
+数字。
+
+```haskell
+instance YesNo Int where
+    yesno 0 = False
+    yesno _ = True
+```
+
+布尔。
+
+```haskell
+instance YesNo Bool where
+    yesno = id
+```
+
+让 Maybe 也称为 YesNo 的 Instance
+
+```haskell
+instance YesNo (May a) where
+    yesno (Just _) = True
+    yesno Nothing = False
+```
+
+Functor typeclass
+
+Functor typeclass 基本上可以代表可以被 map 的东西。比如 List，是的，List 就属于 Functor typeclass。
+
+```haskell
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+```
+
+和之前的稍微有点不一样。之前的 a 是是一个类型变量，但我们知道这肯定是个确认的类型。`f` 是一个 type constructor，是接收一个类型的函数。
+
++ fmap 接收一个函数，这个函数从一个类型映射到另一个类型；还接收一个被 functor 应用过的类型；返回一个被 functor 应用过另一个类型。
+
+我们来看一下针对 List 实现的 map。
+
+```haskell
+instance Functor [] where
+    fmap = map
+```
+
++ [] 不能是 [a]，后者是具体的类型；[] 是 type constructor，能构造出 [Int]、[String] 等具体类型
+
+**可以当成盒子的类型可能就是一个 functor**。比如 `[]` type constructor，就能想象成拥有无限小隔间的盒子：可能全部都是空的；可能部分空；
+
+比如 Maybe type constructor，也可以表现得像个盒子。可能什么都没有，就是 Nothing；或者装了个东西。
+
+```haskell
+instance Functor Maybe where
+    fmap f (Just x) = Just (f x)
+    fmap f Nothing = Nothing
+```
+
+Kind - 类型的类型
+
+类似于 `3`、`"YEAH"`、`True`(函数也是值的一种) 都有自己的类型。类型就是一个标签。但类型也有自己的标签，也就是类型的类型，就是 kind。`:k` 可以得知一个类型的 kind。
+
+```bash
+ghci> :k Int
+Int :: *
+```
+
++ 就是 Int 类型是 *，表示这个类型是一个具体的类型
++ 一个具体类型没有任何类型参数，**而值只能属于具体类型**。
+
+Maybe 就不一样了。
+
+```bash
+ghci> :k Maybe
+May :: * -> *
+```
+
++ 就是说 Maybe 是类型构造子，接收一个具体类型，然后回传一个具体类型。
+
+```bash
+ghci> :k Maybe Int
+May Int :: *
+```
+
+那 Either 呢。
+
+```bash
+ghci> :k Either
+Either :: * -> * -> *
+```
+
+这告诉我们 Either 接受两个具体类型作为参数，并构造出一个具体类型。他看起来也像是一个接受两个参数并回传值的函数类型。类型构造子是可以做 curry 的，所以我们也能 partially apply。
