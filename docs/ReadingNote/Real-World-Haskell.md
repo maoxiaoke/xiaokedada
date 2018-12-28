@@ -1,5 +1,9 @@
 # Real World Haskell
 
+资源链接
+
+- [wiki Haskell](https://wiki.haskell.org/Haskell)
+
 ## 环境配置
 
 1. 编程环境
@@ -907,7 +911,7 @@ class Functor f where
     fmap :: (a -> b) -> f a -> f b
 ```
 
-和之前的稍微有点不一样。之前的 a 是是一个类型变量，但我们知道这肯定是个确认的类型。`f` 是一个 type constructor，是接收一个类型的函数。
+和之前的稍微有点不一样。之前的 a 是一个类型变量，但我们知道这肯定是个确认的类型。`f` 是一个 type constructor，是接收一个类型的函数。
 
 + fmap 接收一个函数，这个函数从一个类型映射到另一个类型；还接收一个被 functor 应用过的类型；返回一个被 functor 应用过另一个类型。
 
@@ -964,3 +968,73 @@ Either :: * -> * -> *
 ```
 
 这告诉我们 Either 接受两个具体类型作为参数，并构造出一个具体类型。他看起来也像是一个接受两个参数并回传值的函数类型。类型构造子是可以做 curry 的，所以我们也能 partially apply。
+
+## IO
+
+和输入输出设备交互是一个不纯的操作。
+
+Hello World
+
+```haskell
+-- file: helloworld
+main = putStrLn "Hello World"
+```
+
+编译这个程序的方式，有很多。其中一种是：
+
+```bash
+$ runghc helloworld.hs
+```
+
+复杂一点的例子
+
+```haskell
+main = do
+    putStrLn "Hello, what's your name?"
+    name <- getLine
+    putStrLn ("Hey " ++ name ++ ", you rock!")
+```
+
+看一下各自的形态吧。
+
+```bash
+ghci> :t main
+main :: IO ()
+
+ghci> :t putStrLn
+putStrLn :: String -> IO ()
+
+ghci> :t putStrLn "Hello World"
+putStrLn "Hello World" :: IO ()
+
+ghci> :type getLine
+getLine :: IO String
+```
+
++ putStrLn 接收一个 String，返回一个 IO ()。IO something 类型的所有东西都是一个 IO Action，你可以保存它但是什么都不会发生。
++ () 是一个空的 tuple(或叫 unit 型态)。表明从 putStrLn 没有返回值
++ IO action 都是有副作用的
++ 需要理解的是，你在 I/O Action 中运行 I/O Action，并且在那儿调用纯的（非I/O）函数。就是说，IO Action 可以保存一个什么东西，但什么都不会发生。只能有其他 IO Action 运行它。
++ 也就是 main。它就是那个顶层 IO action。do 才会运行我们 main 这个 IO action。
++ getLine 看上去就是保存了 IO action，当这个动作运行时会得到一个 String。
++ 这样 pure 和 非 pure 的函数就隔离了。
++ 只有当你有多于一个动作需要运行的时候才要用到 do。do 代码块的值是最后一个动作执行的结果，而且最后一个 IO action 不能绑定任何名字。
+
+看一个更复杂一点的例子：
+
+```haskell
+main = do
+    line <- getLine
+    if null line
+        then return ()
+        else do
+            putStrLn $ reverseWords line
+            main
+
+reverseWords :: String -> String
+reverseWords = unwords . map . reverse. words
+```
+
++ if 在一个 I/O do block 块中，类似于是这样 `if condition then IO action else IO action`
++ 所以 return () 是一个 IO action。return 在 haskell 中完全不一样：意义是使用某个 pure value 造出一个 IO action。`return 'HA'` 的类型就是 IO String。通常，可以用 return () 来造出一个没有做任何事情的 IO action
++ 在 else 中，由于我们递归地调用了 main(还记得吗，main 也是一个 IO action)。因此需要用到 do。
