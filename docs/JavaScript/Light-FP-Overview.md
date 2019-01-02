@@ -56,4 +56,6 @@ factorial n = product [1..n]
 
 ## Lazy
 
+为甚可以 Lazy 求值：因为函数是 pure 的，任何东西都具有 referential transparency。这位 Lazy 提供了条件。我调用一个函数，我可以确定他不会乱来。
+
 ## Referential Transparency

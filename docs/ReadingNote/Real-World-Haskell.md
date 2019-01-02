@@ -3,6 +3,7 @@
 资源链接
 
 - [wiki Haskell](https://wiki.haskell.org/Haskell)
+- [typeclass](https://wiki.haskell.org/Typeclassopedia#Definition)
 
 ## 环境配置
 
@@ -790,7 +791,7 @@ type AssocList k v = [(k, v)]
 
 创建 Typeclasss
 
-Typeclass 的目的之一就是抽象化操作。比如，如果我们不 Person 类型不 driving (Eq)，就需要自己写函数来实现相等性。
+Typeclass 的目的之一就是抽象化操作。比如，如果我们 Person 类型不 driving (Eq)，就需要自己写函数来实现相等性。
 
 ```haskell
 data Person = Person { name :: String
@@ -976,7 +977,7 @@ Either :: * -> * -> *
 Hello World
 
 ```haskell
--- file: helloworld
+-- file: helloworld.hs
 main = putStrLn "Hello World"
 ```
 
@@ -984,6 +985,14 @@ main = putStrLn "Hello World"
 
 ```bash
 $ runghc helloworld.hs
+```
+
+还可以不使用 REPL，直接在终端运行。
+
+```bash
+$ ghc --make helloworld
+$ ./helloworld
+Hello World
 ```
 
 复杂一点的例子
@@ -1038,3 +1047,138 @@ reverseWords = unwords . map . reverse. words
 + if 在一个 I/O do block 块中，类似于是这样 `if condition then IO action else IO action`
 + 所以 return () 是一个 IO action。return 在 haskell 中完全不一样：意义是使用某个 pure value 造出一个 IO action。`return 'HA'` 的类型就是 IO String。通常，可以用 return () 来造出一个没有做任何事情的 IO action
 + 在 else 中，由于我们递归地调用了 main(还记得吗，main 也是一个 IO action)。因此需要用到 do。
+
+模块 Control.Monad
+
+模块 Control.Monad 提供了一些能够处理 IO action 的函数。
+
++ when - 用在 do block 中，接受一个 Boolean 值和 IO action。用法是将 `if something then do some I/O action else return ()` 这样的模式封装起来。
++ forever - 接受一个 IO action 并回传一个永远作同一件事的 IO action。
+
+文件和字符流
+
+比如我们有一个文件 baby.txt
+
+```text
+I'm a xiaoke
+I'm handsome
+haaaaaaaaaaa
+```
+
+我们如何处理这个文件呢。
+
+```haskell
+import Data.Char
+
+main = do
+    contents <- getContents
+    putStr (map toUpper contents)
+```
+
+编译文件，然后
+
+```bash
+$ cat baby.txt | .toUpperCase
+```
+
+有一点：
+
++ getContents 是 Lazy IO
++ `foo <- getContents` 并不会马上读取所有输入，将他们存在 memory 里面
+
+## Functor
+
+在 haskell 中，Functor 是一元 type constructor。 属于 Functor typeclass 的 instance，并且满足 functor law。
+
+提到的 Maybe、[]、Either a 都是 functor。
+
+其次，IO action 也是 functor。
+
+Applicative functors
+
+当我们对 functor map over 一个函数时，用的函数都只接受一个参数。但如果函数接受两个参数呢。
+
+比如 `fmap(*) (Just 3)` 的结果是 `Just(* 3)`，得到了一个包在 Just 中的函数。
+
+```bash
+ghci> :t fmap (++) (Just 5)
+fmap (++) (Just 5) :: Num [a] => Maybe ([a] -> [a])
+```
+
+之后，我们需要用一个能 “吃” (这个包在 Just 中的函数) 的函数来 map over 这个 functor。
+
+```bash
+ghci> let a = fmap (*) [1,2,3,4]
+ghci> fmap (\f -> f 9) a
+[9,18,27,36]
+```
+
+applicative functors 在 Haskell 中是用在 Control.Applicative 中的 Applicative 这个 typeclass 来定义的。
+
+```haskell
+class (Functor f) => Applicative f where
+    pure :: a -> f a
+    (<*>) :: f (a -> b) -> f a -> f b
+```
+
++ class contraint 描述了一个 type constructor 是 Applicative，也必须是 Functor。
++ 第一个定义是 pure，类型是 `pure :: a -> f a`。应该要接受一个值，然后回传一个包含那个值的 applicative functor。
++ `<*>` 的类型 `f (a -> b) -> f a -> f b`。`<*>` 则是接受一个装有函数的 functor 跟另一个 functor，然后取出第一个 functor 中的函数将它对第二个 functor 中的值做 map。
+
+我们可以看一下 Maybe 的 Applicative 的实现。
+
+```haskell
+instance Applicative Maybe where
+    pure = Just
+    Nothing <*> _ = Nothing
+    (Just f) <*> something = fmap f something
+```
+
+关键字 newtype
+
+## monad
+
+当我们谈到 Functor，抽象概念是代表一种可以被 map over 的值。
+
+Applicative Functor 代表一种带有 context 的型态，可以用函数操作它而且同时保有他的 context。
+
+Monad 是一个从 Applicative Functor 演进的过程：如果你有一个具有 context 的值 m a，如果把他丢进一个只接受普通值 a 的函数中，并回传一个具有 context 的值。如：
+
+```haskell
+(>>=) :: (Monad m) => m a -> (a -> m b) -> m b
+```
+
++ 接受一个 monadic value，以及一个接受普通值得函数，然后回传一个 monadic value
+
+Maybe Monad
+
+一个 Maybe a 的类型表明 a 的值具备一个可能造成错误的的 context。而 Just "dharma" 的值代表他不是一个 "dharma" 的字符串就是字符串不见时的 Nothing。如果你把字符串当作计算的结果，Nothing 就代表计算失败了。
+
+Monad type class
+
+```haskell
+class Monad m where
+    return :: a -> m a
+
+    (>>=) :: m a -> (a -> m b) -> m b
+
+    (>>) :: m a -> m b -> m b
+    x >> y = x >>= \_ -> y
+
+    fail :: String -> m a
+    fail msg = error msg
+```
+
++ return 等价于 pure，接受一个普通值并放进一个最小的 context 里。
++ `>>==` bind 函数，接受一个 monadic value(具有 context 的值)，并且把他喂给一个接受普通值的函数，并回传一个 monadic value。
+
+
+看一下 Maybe 的 Monad instance。
+
+```haskell
+instance Monad Maybe where
+    return x = Just x
+    Nothing >>= f = Nothing
+    Just x >>= f  = f x
+    fail _ = Nothing
+```

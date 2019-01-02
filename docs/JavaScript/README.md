@@ -73,3 +73,4 @@ Everyone can code. 但思想不一定所有的人都有。这小节存放一些�
 + [书写有用而优雅的代码](./Small-and-Chunk-Code.md)
 + [你看到的 JavaScript，并不是真实的](./I-Dont-Know-JavaScript)
 + [有关代码重构和整洁之道](./Refactor-JavaScript.md)
++ [设计模式](./JavaScript-Design-Pattern.md)

@@ -101,7 +101,8 @@ function genSidebarJavaScript () {
       children: [
         'Small-and-Chunk-Code',
         'I-Dont-Know-JavaScript',
-        'Refactor-JavaScript'
+        'Refactor-JavaScript',
+        'JavaScript-Design-Pattern'
       ]
     }
   ]
