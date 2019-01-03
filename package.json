@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vuepress dev src",
-    "src:build": "vuepress build src",
-    "deploy": "npm run src:build && faas deploy"
+    "dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "deploy": "npm run docs:build && faas deploy"
   },
   "author": "",
   "license": "ISC",
