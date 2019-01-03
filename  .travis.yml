@@ -1,0 +1,19 @@
+language: node_js
+sudo: required
+node_js:
+  - 8.11.1
+cache:
+  directories:
+    - node_modules
+script:
+    - ./deploy.sh
+branch: master
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $bd2de3722b58241e851d48399747b55023fe8510
+  local-dir: ./docs/.vuepress/dist/ ## 根据情况自定义到静态文件输出目录
+  target-branch: gh-pages
+  verbose: true
+  on:
+    branch: master
