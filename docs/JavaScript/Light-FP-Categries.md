@@ -67,7 +67,7 @@ Let's Go A Litte Farther! 若还有函数关系：`ℎ : C → D`。
 
 <p style="text-align: center">dom(𝑓), cod(𝑓)</p>
 
-称为 𝑓 的域(domain) 和值域(codomain)。对于:
+称为 𝑓 的域(domain) 和陪域(codomain)。对于:
 
 <p style="text-align: center">𝑓 : A → B</p>
 
@@ -101,11 +101,89 @@ Let's Go A Litte Farther! 若还有函数关系：`ℎ : C → D`。
 
 有时，arrows 也被称为 morphisms(态射)。
 
+## 常见的范畴
+
+### 特殊的范畴
+
+#### 范畴 O
+
+没有 objects，也没有 arrows。
+
+#### 范畴 𝟏
+
+<p style="text-align: center">﹡</p>
+
+#### 范畴 𝟐
+
+<p style="text-align: center">﹡ → ✶ </p>
+
+### Hask 范畴
+
+为了辅助编程语言的设计，Haskell 引入了 Hask 范畴。在 Hask 范畴中<sup>3</sup>：
+
++ Objects 是 Haskell 类型
++ Object A 到 Object B 的 arrow 是 Haskell 类型 A 到 类型 B 的函数
++ Haskell 类型 A 的 identity arrow 是 `id:: A -> A`
++ arrows 的组合是 `f . g = \x -> f (g x)`
+
+### monoid 范畴
+
+#### monoid 定义
+
+一个 monoid (𝑀,*,𝒆) 的定义如下：
+
+假设 𝑀 是一个集合(Set)，存在二元运算 *，有 𝑀 * 𝑀 → 𝑀。且满足：
+
+1. Associativity
+
+集合 𝑀 内的元素 a, b 和 c，有 (a * b) * c = a * (b * c)
+
+2. Identity element
+
+集合 𝑀 内存在元素 𝒆，对于集合内的任何元素 a，有 𝒆 * a = a * 𝒆 = a
+
+简单来说，monoid 可理解为具有单位元的半群(semigroup)。
+
+#### monoid 定义为范畴
+
+和 monoid 范畴相对应的是：
+
+1. 本质是只有一个 object 的范畴，即为 𝑀
+2. arrows 是 monoid 的元素
+3. Indentity arrow 即为 𝒆
+4. Composition 由 monoid 的二元操作支持：𝑚 ∘ 𝑛 = 𝑚 * 𝑛
+
+#### 自然数集 𝐍 是 monoid
+
+考虑自然数集 𝐍 是加法和乘法上的 monoid。
+
+![](https://github.com/maoxiaoke/xiaokedada/blob/master/assets/monoid-N.jpg?raw=true)
+
+#### 偏序集
+
+偏序集(partially ordered set, poset) 𝑆 存在二元运算 ≤，对于 a,b,c ∈ 𝑆，有：
+
+- a ≤ a
+- a ≤ b, b ≤ a，则 a = b
+- a ≤ b, a ≤ c，则 a ≤ c
+
+#### monoid 在并行运算的广泛使用
+
+## 一些个言论
+
+1. It's the arrows that really matter!
+
+系统论角度
+
+2. Composition is at the very root of category theory.
+
 ## Appendix
 
 [1] Category Theory (second Edition) - Steve Awodey
 
 [2] [高级范畴学](http://www.tup.tsinghua.edu.cn/upload/books/yz/049831-01.pdf)
+
+[3] [Hask](https://wiki.haskell.org/Hask)
 
 著作：
 
