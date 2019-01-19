@@ -247,6 +247,63 @@ const foo = 123
 
 但任何包含 top-level import 和 export 的文件都会当做一个模块(这一点 TypeScript 和 ECMAScipt 2015 一致)。
 
+### 模块路径
+
+和往常一样，TypeScript 提供相对模块路径和动态模块路径两种引入方式，采用 place 的查找策略。
+
++ 如果 `place` 是一个文件，nice。
++ 否则，如果 `place` 是一个文件夹，并且存在 `index.ts` 文件，nice。
++ 否则，如果 `place` 是一个文件夹，并且存在一个 `package.json` 文件，并且该文件指定了类型文件的存在(通过 `typing` 字段)，nice。
++ 否则，如果 `place` 是一个文件夹，并且存在一个 `package.json` 文件，并且该文件指定了入口(main 字段)文件的存在，也是 ok 的。
+
+### 引入第三方库
+
+1. 第三方库提供 TypeScript 支持
+
+从上面可以了解到，如果引入的第三方库提供了 TypeScript 支持(通过查看其目录下的 `package.json` 文件的 `typing` 字段)，我们就想往常一样引入就可以了。
+
+比如，`vuex-class` 库，其 `package.json` 的内容有。
+
+```json
+{
+  ...
+  "typings": "lib/index.d.ts",
+  ...
+}
+```
+
+2. 使用 @type
+
+有些库本身不提供 TypeScript 支持。因此出现了这样的一个叫 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) 的库，为常见的库提供类型定义。
+
+比如，引入 `ramda` 函数库。
+
+```bash
+-> npm install -s ramda
+-> npm install -s @types/ramda
+```
+
+3. 为自定义的库写声明文件
+
+无可避免的，会有一些无人维护其类型定义的库。比如一个叫 `foo` 的模块。
+
+```ts
+// globals.d.ts
+declare module 'foo' {
+  // some variable declarations
+  export var bar: number;
+}
+```
+
+当然，最便捷的就是。
+
+```ts
+// globals.d.ts
+declare module 'foo'
+```
+
+如何高质量的书写类型定义，官方文档提供了[详细的介绍](http://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html)。
+
 ## namespace
 
 额，下面的代码在 JavaScript 是种普遍的方式。
@@ -385,3 +442,11 @@ Array.prototype.toObservable = function () {
 ## tsconfig.json
 
 tsconfig.json 文件指定用来编译这个项目的根文件和编译选项。编译选项可以参考[Compiler Options](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+
+## REFERENCE
+
+1. [TypeScript Deep Dive](https://legacy.gitbook.com/book/basarat/typescript/details) 一本比较通俗的 JavaScript
+
+2. [Vuex and Typescript](https://codeburst.io/vuex-and-typescript-3427ba78cfa8) 将 TypeScript 和 Vuex 结合的文章
+
+3. [VueJS Typescript with Vuex using Vue-CLI 3](https://github.com/eladcandroid/typescript-vuex-example) 引用 2 的代码实现
