@@ -54,8 +54,8 @@ const obj: Foo = {}
 和 Interface 不同，有点类似 Interface 的 “语法糖”。可以省去对类型进行命名的麻烦。
 
 ```ts
-let person = {
-  name: string,
+let person: {
+  name: string;
   age: number
 }
 person = {
@@ -66,11 +66,53 @@ person = {
 
 ### Generics
 
-泛型是类型的 “类型”。我们用 `<>` 来告诉你，这是一个泛型。
+泛型是类型的 “类型”。我们用 `<>` 来告诉你，这是一个泛型。Generics 的意义在于 “为函数参数和函数返回值，类实例成员和类方法” 之间提供约束。
+
+identity 是函数式编程中常见的一个函数。你给它什么，它就给你吐出什么。
 
 ```ts
-function reverse<T> (items: T[]): T[] {
-  //...
+function identity<T>(arg: T): T {
+  return arg
+}
+```
+
+1. 泛型用在接口中
+
+上面的函数我们也可以这样写：
+
+```ts
+interface IIdentity<T> {
+  (arg: T): T
+}
+const identity: IIdentity = arg => arg
+```
+
+2. 泛型约束
+
+就好比变量会在编译时才知道具体的值，泛型也是在编译时才知道具体的类型。可是，诸如 number 类型没有 `length` 属性，这个时候需要进行泛型约束。
+
+```ts
+interface ILength {
+  length: number
+}
+function identityLen<T extends ILength>(arg: T): number {
+  return arg.length
+}
+```
+
+这种情况下，泛型就不能应用于任何类型了。
+
+```ts
+identityLen(3) // error
+identityLen({ length: 10, value: 3})
+identityLen([1, 2, 4])
+```
+
+3. 数组泛型
+
+```ts
+function reverseArr<T>(arg: T[]): T[] {
+  return arg.revrese()
 }
 ```
 
@@ -443,6 +485,199 @@ Array.prototype.toObservable = function () {
 
 tsconfig.json 文件指定用来编译这个项目的根文件和编译选项。编译选项可以参考[Compiler Options](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
 
+## Recap
+
+### 简单类型的写法
+
+```ts
+const a: String = 'xiaoke'
+const b: Boolean = false
+const c: Number = 10
+const d: null = null
+const e: undefined = undefined
+```
+
+### 数组的写法
+
+```ts
+// 方式一：类型 + []
+const arr: Number[] = [1, 2, 3]
+
+// 方式二：数组泛型
+const arr: Array[Number] = [1, 2, 3]
+
+// 方式三：用索引签名
+interface NumArr {
+  [index: number]: number
+}
+const arr: NumArr = [1, 2, 3]
+
+// 方式四：Inline Type Annotation
+let arr: {
+  [index: number]: number
+}
+arr = [1, 2, 3]
+```
+
+### 简单对象的写法
+
+```ts
+// 方式一：interface 的方式
+interface IPerson {
+  name: string;
+  age: number;
+}
+const person: IPerson = {
+  name: 'xiaoke',
+  age: 18
+}
+
+// 方式二：Inline Type Annotation
+let person: {
+  name: string;
+  age: number;
+}
+person = {
+  name: 'xiaoke',
+  age: 18
+}
+```
+
+### 无法确定对象的属性的写法
+
+```ts
+// 利用索引签名
+interface IPerson: {
+  [key: string]: number | string
+}
+```
+
+### 函数的写法
+
+1. 函数声明
+
+```ts
+// 函数声明的方式
+function (x: number, y: number): number {
+  return x + y
+}
+
+```
+
+2. 函数表达式
+
+```ts
+// 方式一：函数表达式方式
+const sum: (x: number, y: number) => number = (x, y) => x + y
+
+// 方式二：interface 的方式
+interface ISum {
+  (x: number, y: number): number
+}
+const sum: ISum = (x, y) => x + y
+```
+
+### 字符串约束的写法
+
+有时候，我们可能需要约束某些变量只能取固定的几个值。比如创建一张卡片，我们约束卡片的类型只有 “新建”(new) 和 “更新”(update)。我们可以这样写。
+
+```ts
+// 利用字面量类型
+type TCardType = 'new' | 'update'
+const card: TCardType = 'new'
+
+// 或者 enum 方式(这类方式指的再考虑下)
+enum ECardType = {
+  New: 'new';
+  Update: 'update'
+}
+const card: string = ECardType.New
+```
+
+同理，可以推广到其他类型。
+
+```ts
+type INum = 1 | 3 | 5
+const num: INum = 3
+```
+
+## Protips
+
+### 使用 ReadonlyArray
+
+### 正确使用泛型
+
+泛型和 any 类型有那么点相似。在使用泛型的时候，首先应该思考的是：向用泛型提供怎样的约束。
+
+比如一个函数：
+
+```ts
+function foo<T> (arg: T): void {
+  // Do something
+}
+
+// 和下面相比安全性似乎并没有提升
+function foo (arg: any): void {
+  // Do something
+}
+```
+
+即，在参数和返回值之间提供约束。
+
+### Lint
+
+目前 TypeScript Lint 的方案有两种。
+
+1. 使用 [TSLint](https://palantir.github.io/tslint/)
+
+2. 使用 [ESLint](https://eslint.org/) + [typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+
+对于 Visual Code，可以在 IDE 中集成 ESLint 和 TSLint。分别安装 [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) 和 [TSLint extension](https://marketplace.visualstudio.com/items?itemName=eg2.tslint)。
+
+注意，ESLint 默认是不会检查 `.ts` 文件的，因此需要在 `setting.json` 文件中添加对 TypeScript 的支持。可以详细阅读其 readme。
+
+```ts
+{
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript"
+    ]
+}
+```
+
+### TypeScript 编译后的 JavaScript
+
+如果你想知道你的 TypeScript 最终编译成什么样的 JavaScript 代码，有以下方法:
+
+1. 通过 tsc 命令
+
+首先，需要通过 `npm` 安装 `TypeScript`。
+
+```bash
+$ npm install -g typescript
+```
+
+然后，编写你的 `.ts` 文件并执行命令：
+
+```bash
+tsc yourfile.ts
+```
+
+2. 直接通过官网的 PlayGround
+
+官方提供了 [PlayGround](http://www.typescriptlang.org/play/index.html) 可直接查看编译后的代码。
+
+## Good example
+
+### swap 函数
+
+```ts
+function swap<T, U> (tuple: [T, U]): [U, T] {
+  return [tuple[1], tuple[0]]
+}
+```
+
 ## REFERENCE
 
 1. [TypeScript Deep Dive](https://legacy.gitbook.com/book/basarat/typescript/details) 一本比较通俗的 JavaScript
@@ -450,3 +685,5 @@ tsconfig.json 文件指定用来编译这个项目的根文件和编译选项。
 2. [Vuex and Typescript](https://codeburst.io/vuex-and-typescript-3427ba78cfa8) 将 TypeScript 和 Vuex 结合的文章
 
 3. [VueJS Typescript with Vuex using Vue-CLI 3](https://github.com/eladcandroid/typescript-vuex-example) 引用 2 的代码实现
+
+4. [代码检查](https://ts.xcatliu.com/engineering/lint.html) Lint 的一些内容
