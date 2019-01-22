@@ -64,7 +64,7 @@ person = {
 }
 ```
 
-### Generics
+## Generics
 
 泛型是类型的 “类型”。我们用 `<>` 来告诉你，这是一个泛型。Generics 的意义在于 “为函数参数和函数返回值，类实例成员和类方法” 之间提供约束。
 
@@ -116,7 +116,39 @@ function reverseArr<T>(arg: T[]): T[] {
 }
 ```
 
-### Union Type
+## Index Type
+
+我们通常有这样的场景，我们的项只属于某个接口中定义的声明。比如 pluck 函数：选取对象的子集。
+
+```ts
+function pluck<T, K extends keyof T> (O: T, names: K[]): T[K][] {
+  return names.map(n => o[n])
+}
+```
+
+1. keyof
+
+keyof，即 index type query operator。对于任何类型 `T`, `key of T` 是 `T` 上已知的公有属性名的联合。
+
+```ts
+interface IPerson {
+  name: string;
+  age: number
+}
+let UPersonProps: keyof IPerson // 'name' | 'age'
+```
+
+2. Indexed Access Operator
+
+T[K]，即 indexed access operator。这意味着 `person['name']` 具有类型 `IPerson['name']`，在例子中就和 string 类型等价。也就是说，只有当返回 `T[K]` 的结果时，编译器会实例化真实的类型。
+
+## Mapped Types
+
+Mapped Types，即类型生产类型。这赋予 TypeScript 非常强大的生命力。
+
+[lib.d.ts](#lib.d.ts) 提供了一些 Mapped Types 的介绍。
+
+## Union Type
 
 联合类型用 `|` 作为标记。
 
@@ -126,7 +158,29 @@ function handleCommand (command: string[] | string): void {
 }
 ```
 
-### Type Alias
+## Literal Types
+
+字符串字面量类型(String Literal Types) 可以为 JavaScript 变量提供一个准确的值。比如用于 `switch` 的值，比如方向只有 'North'、'East'、'South'、'West' 四个取值。
+
+```ts
+// Inline Type Annotation 的方式
+let cardinalDirection: 'North' | 'East' | 'South' | 'West'
+cardinalDirection = 'East'
+
+// type 的方式
+type ICardinalDirection = 'North' | 'East' | 'South' | 'West'
+const cardinalDirection = 'East'
+```
+
+同理，也有提供 Number 和 Boolean 的 Literal Types 支持。
+
+```ts
+type num = 1 | 3 | 5
+```
+
+## Null 类型
+
+## Type Alias
 
 类型别名用 `type` 标记。
 
@@ -134,7 +188,7 @@ function handleCommand (command: string[] | string): void {
 type TStrOrNum = string | number
 ```
 
-### Interface
+## Interface
 
 Interface 是为我们的代码或第三方代码定义 “契约”。Interface 能够描述 JavaScript 中对象拥有的各种各样的外形。
 
@@ -180,7 +234,7 @@ interface ICounter {
 }
 ```
 
-6. 索引签名
+6. Index Signature
 
 第一类是 number 类型的索引签名。
 
@@ -236,7 +290,7 @@ square.color = "blue"
 square.sideLength = 10
 ```
 
-### 为函数定义类型
+## 为函数定义类型
 
 1. 具名函数
 
@@ -481,6 +535,200 @@ Array.prototype.toObservable = function () {
 }
 ```
 
+## lib.d.ts
+
+我们可能好奇，为啥 JavaScript 官方的一些 api，不需要我们写类型声明。这是因为 TypeScript 已经为我们定义好了。所有的内容都放在 [lib.d.ts](https://github.com/Microsoft/TypeScript/tree/master/lib) 中了。
+
+我们首先看一下 [lib.es2015.core.d.ts](https://github.com/Microsoft/TypeScript/blob/master/lib/lib.es2015.core.d.ts)，这个文件包含了 ES6 的一些核心 api 的声明。
+
+举例说明：
+
+```ts
+interface Math {
+  /**
+  * Returns the number of leading zero bits in the 32-bit binary representation of a number.
+  * @param x A numeric expression.
+  */
+  clz32(x: number): number;
+
+  /**
+    * Returns the result of 32-bit multiplication of two numbers.
+    * @param x First number
+    * @param y Second number
+    */
+  imul(x: number, y: number): number;
+}
+```
+
+接下来的重点是看一下 TypeScript 官方提供的一些工具泛型(即，Mapped Types) 或 类型。
+
+### Partial
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type Partial<T> = {
+    [P in keyof T]?: T[P]
+}
+```
+
+这里有三个关键点：
+
++ `in` 关键字
++ `keyof` 关键字，即 index type query operator
++ `T[P]`，即 indexed access operator
+
+那么，这个 Mapped Types 的意思就很明确了：使类型 `T` 中的属性变为可选(optional)。用法如下：
+
+```ts
+interface IPerson {
+  name: string,
+  age: number
+}
+type TPersonPartial = Partial<IPerson>
+
+const personPartial: TPersonPartial = {
+  name: 'xiaoke'  // 不会报错
+}
+```
+
+### Readonly
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type Readonly<T> = {
+    readonly [P in keyof T]: T[P]
+}
+```
+
+同理，很好理解：使类型 `T` 中的属性变为可选(readonly)。
+
+### Required
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type Required<T> = {
+    [P in keyof T]-?: T[P]
+}
+```
+
+比较有意思的点在于 `-?` 标记，作用和 `?` 相反：使类型 `T` 中的属性变为必选(required)。
+
+### Pick
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type Pick<T, K extends keyof T> = {
+    [P in K]: T[P]
+}
+```
+
+`keyof` 配合 `extends` 的效果就是：从 `T` 中取出一系列 `K` 的属性。用法如下：
+
+```ts
+interface IPerson {
+  name: string,
+  age: number
+}
+
+type TPersonPartial = Pick<IPerson, 'name'>
+
+const personPartial: TPersonPartial = {
+  name: 'xiaoke'
+}
+```
+
+### Omit
+
+和 `Pick` 相反的操作，是 `Omit`。自定义 `Omit` 类型如下。
+
+```ts
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
+```
+
+是的，我们用了 `Pick` 和 `Exclude` 类型来生成我们的 `Omit` 类型。
+
+```ts
+interface IPerson {
+  name: string,
+  age: number
+}
+
+type TPersonPartial = Omit<IPerson, 'name'>
+
+const personPartial: TPersonPartial = {
+  age: 18
+}
+```
+
+## Record
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type Record<K extends keyof any, T> = {
+    [P in K]: T
+}
+```
+
+`keyof any` 有点意思，是什么呢？
+
+```ts
+const TWhatIsTheFxxk = keyof any  // string | number | symbol
+```
+
+所以含义应该是：将一系列属性 `K` 的属性值变成类型 `T`。都用法如下。
+
+```ts
+type TPerson = Record<'name' | 'age', string>
+const person = {
+  name: 'xiaoke',
+  age: '18'
+}
+```
+
+### Exclude
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type Exclude<T, U> = T extends U ? never : T
+```
+
+这里有个[新语法](http://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html)：`T extends U ? never : T`，这个好像是三元运算符。举例：
+
+```ts
+T extends U ? X : Y
+```
+
+如果 `T` is assignable to `U` 的话，就会返回 `X`，否则 `Y`。
+
+那 `Exclude` 类型的含义是：从 `T` 中剔除那些可以赋值给 `U` 的类型。
+
+### Extract
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type Extract<T, U> = T extends U ? T : never
+```
+
+和 `Exclude` 类型类型相反：从 `T` 中抽取那些可以赋值给 `U` 的类型。
+
+### NonNullable
+
+定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
+
+```ts
+type NonNullable<T> = T extends null | undefined ? never : T
+```
+
+从 `T` 中剔除那些可以赋值给 `null` 和 `undefined` 类型。
+
+
 ## tsconfig.json
 
 tsconfig.json 文件指定用来编译这个项目的根文件和编译选项。编译选项可以参考[Compiler Options](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
@@ -681,6 +929,8 @@ function swap<T, U> (tuple: [T, U]): [U, T] {
 ## REFERENCE
 
 1. [TypeScript Deep Dive](https://legacy.gitbook.com/book/basarat/typescript/details) 一本比较通俗的 JavaScript
+
+2. [深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/) 上面的中文译本
 
 2. [Vuex and Typescript](https://codeburst.io/vuex-and-typescript-3427ba78cfa8) 将 TypeScript 和 Vuex 结合的文章
 
