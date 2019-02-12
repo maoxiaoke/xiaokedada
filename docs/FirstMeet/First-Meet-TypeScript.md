@@ -664,7 +664,7 @@ const personPartial: TPersonPartial = {
 }
 ```
 
-## Record
+### Record
 
 定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
 
@@ -752,7 +752,7 @@ const e: undefined = undefined
 const arr: Number[] = [1, 2, 3]
 
 // 方式二：数组泛型
-const arr: Array[Number] = [1, 2, 3]
+const arr: Array<Number>= [1, 2, 3]
 
 // 方式三：用索引签名
 interface NumArr {
@@ -855,7 +855,7 @@ const num: INum = 3
 
 ### 正确使用泛型
 
-泛型和 any 类型有那么点相似。在使用泛型的时候，首先应该思考的是：向用泛型提供怎样的约束。
+泛型和 any 类型有那么点相似。在使用泛型的时候，首先应该思考的是：想用泛型提供怎样的约束。
 
 比如一个函数：
 
@@ -872,6 +872,31 @@ function foo (arg: any): void {
 
 即，在参数和返回值之间提供约束。
 
+### 用 typeof 定义类型
+
+在上面的很多例子中，我们都是先定义了类型，再定义变量。
+
+```ts
+interface IPerson {
+  name: string;
+  age: number;
+}
+const person: IPerson = {
+  name: 'xiaoke',
+  age: 18
+}
+```
+
+有一种更为直接的方法是利用 `typeof`。
+
+```ts
+const person = {
+  name: 'xiaoke',
+  age: 18
+}
+type TPerson = typeof person
+```
+
 ### Lint
 
 目前 TypeScript Lint 的方案有两种。
@@ -880,7 +905,7 @@ function foo (arg: any): void {
 
 2. 使用 [ESLint](https://eslint.org/) + [typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
 
-对于 Visual Code，可以在 IDE 中集成 ESLint 和 TSLint。分别安装 [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) 和 [TSLint extension](https://marketplace.visualstudio.com/items?itemName=eg2.tslint)。
+智能提示是 TypeScript 一个非常惹人喜爱的一点。对于 Visual Code，可以在 IDE 中集成 ESLint 和 TSLint 来提供智能提示的功能。分别安装 [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) 和 [TSLint extension](https://marketplace.visualstudio.com/items?itemName=eg2.tslint)。
 
 注意，ESLint 默认是不会检查 `.ts` 文件的，因此需要在 `setting.json` 文件中添加对 TypeScript 的支持。可以详细阅读其 readme。
 
@@ -893,6 +918,10 @@ function foo (arg: any): void {
     ]
 }
 ```
+
+而对于 TSLint，即装即用。
+
+Q: VSCode 提供的 TSLint extension 并不支持 `vue`。对于常年使用 `vue` 的用户，可以考虑使用 [TSLint Vue](https://marketplace.visualstudio.com/items?itemName=prograhammer.tslint-vue)。这个 extension 拷贝了官方的 TSLint extension，并提供了对 `.vue` 文件的支持。[仓库地址 vscode-tslint-vue](https://github.com/prograhammer/vscode-tslint-vue)。使用方式是 disable 掉 TSLint extension，启用 TSLint Vue 即可。
 
 ### TypeScript 编译后的 JavaScript
 

@@ -92,8 +92,22 @@ function timeLevel (exception) {
 | edit  | 编辑        | editPanleVisible |
 | register | 在某处注册函数 |
 | dispatch | 分发某一操作 |
+| pick   | 从什么之中选择某项   |
+| omit   | 从什么之中忽略某项 |
+| exclude | 从什么之中排除某项 |
+| extract | 从什么之中抽取某项 |
+| alter  | 更改、改变 |
+| trigger | 触发器，通常指通过动作触发开关 |
 | hidden  | 隐藏      | hiddenPanle |
 | gotIt   | 知道了    |
+
+不用泛泛的词，记录下的使用规范：
+
+(1) 不用 `change`，change 的意思太宽泛了。若表达更改(同一类事物)，用 `alter`；表达替代(某一类替换成另一类)，用 `replace`；表达彻底改变，用 `transform`；表达转换，用 `switch`；表达修改，用 `modify`。
+
+(2) 不用 `stop`。若表达暂停，用 `pause`；表达停止用 `kill`。
+
+(3) 不用 `find`。若表达搜索，用 `search`；表达抽离，用 `exclude`
 
 5. 需要为 `this` 更名的地方，使用 `context`，而不是 `that` 或 `_this`<sup>1</sup>。
 
