@@ -331,25 +331,29 @@ function queryPolling (type) {
 const lookupTable = {
   '2m': pollingFor2Min,
   '5m': pollingFor5Min,
-  '9m': pollingFor9Min
+  '9m': pollingFor9Min,
+  'default': handleDefault
 }
 
 const queryPolling = type => {
-  lookupTable[type].call(this)
+  lookupTable[type] && lookupTable[type].call(this)
 }
 
 // 正例
 const lookupTable = new Map([
   ['2m', pollingFor2Min],
   ['5m', pollingFor5Min],
-  ['9m', pollingFor9Min]
+  ['9m', pollingFor9Min],
+  ['default', handleDefault]
 ])
 const queryPolling = type => {
-  lookupTable.get(`${type}`).call(this)
+  lookupTable.get(`${type}`) && lookupTable.get(`${type}`).call(this)
 }
 ```
 
 值得注意的是，当代码中引入了 `this`，有时候会需要使用 `call()` 或 `apply()` 绑定上下文。
+
+总而言之，并不是认为可以用这种方式完全取代 switch，我觉得这是一种过激的行为，而是提供另外可供参考的写法。
 
 ### 条件判断中提前 return 似乎是可取的
 

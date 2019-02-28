@@ -29,3 +29,9 @@
 ## 英语学习
 
 [如何高效学习英语](https://byoungd.gitbook.io/english-level-up-tips/)
+
+## JSON Schema
+
+[Getting Started Step-By-Step](http://json-schema.org/learn/getting-started-step-by-step.html)
+
+[The fastest JSON Schema Validator](https://ajv.js.org/keywords.html#compound-keywords)
