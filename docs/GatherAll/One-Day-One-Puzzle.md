@@ -56,4 +56,62 @@ function firstNonLetter (str) {
   }
   return letterArr[i]
 }
+
+// 使用正则
+function firstNonLetter (str) {
+  let i
+  for (i = 0; i < str.length; ++i) {
+    const matchedArr = str.match(new RegExp(str[i], 'gi'))
+    if (matchedArr.length === 1) {
+      break
+    }
+  }
+  return str[i]
+}
+```
+
+5. 阶乘的末尾有多少个 0
+
+题干描述：
+
+Write a program that will calculate the number of trailing zeros in a factorial of a given number.
+
+N! = 1 * 2 * 3 * ... * N
+
+Examples zeros(6) = 1
+
+```bash
+# 6! = 1 * 2 * 3 * 4 * 5 * 6 = 720 --> 1 trailing zero
+```
+
+zeros(12) = 2
+
+```bash
+# 12! = 479001600 --> 2 trailing zeros
+```
+
+> 这个题主要是看阶乘的前 n 个数有多少个和 5 有关的值，但是 25 = 5 * 5, 50 = 5 * 5 * 2... 零的个数相对应又要一个
+
+Friend:
+
+```js
+function zeros (n) {
+  let count = 0
+  for (let i = 0; i <= n; i += 5) {
+    let num = i
+    while (num && num % 5 === 0) {
+      count++
+      num /= 5
+    }
+  }
+  return count
+}
+```
+
+6. 获取一个变量的类型
+
+```js
+function types(val: any): string {
+  return Object.prototype.toString().call(val)
+}
 ```

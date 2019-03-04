@@ -65,6 +65,7 @@ JavaScript 非常有趣。如果有机会，我愿意学 Go。
 + [原生JavaScript的DOM操作](./DOM-Operation.md)
 + [再来仔细研究DOM](./DOM-More.md)
 + [和 URL 有关的 Location 和 History](./DOM-History.md)
++ [CORS](./DOM-CORS.md)
 
 #### Thinking-in-JavaScript
 

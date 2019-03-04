@@ -92,7 +92,8 @@ function genSidebarJavaScript () {
       children: [
         'DOM-Operation',
         'DOM-More',
-        'DOM-History'
+        'DOM-History',
+        'DOM-CORS'
       ]
     },
     {
@@ -177,7 +178,8 @@ function genSidebarAll (title) {
         'Free-Book-Resources',
         'Online-Resources',
         'Libraries',
-        'Summarize-Your-Career'
+        'Summarize-Your-Career',
+        'One-Day-One-Puzzle'
       ]
     }
   ]
