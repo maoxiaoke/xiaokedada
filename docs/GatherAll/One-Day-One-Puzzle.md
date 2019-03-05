@@ -115,3 +115,16 @@ function types(val: any): string {
   return Object.prototype.toString().call(val)
 }
 ```
+
+7. ES5/ES6 的继承除了写法以外还有什么区别?
+
+Friend:
+
+1、ES5先构造子类实例对象this，再将父类方法添加到this上，ES6先将父类对象和方法添加到this上，再根据子类构造函数修改this
+
+2、ES5无法继承父类原生构造函数，而ES6可以继承父类所有行为
+
+reference: http://es6.ruanyifeng.com/#docs/class-extends
+
+Me:
+

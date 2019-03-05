@@ -87,6 +87,12 @@ function genSidebarJavaScript () {
       ]
     },
     {
+      title: 'Rxjs',
+      collapsable: false,
+      children: [
+      ]
+    },
+    {
       title: 'DOM 相关',
       collapsable: false,
       children: [
