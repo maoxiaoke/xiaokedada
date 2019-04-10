@@ -19,15 +19,17 @@ module.exports = {
     editLinkText: '在 Github 上编辑此页',
     lastUpdated: '上次更新',
     nav: [
+      { text: 'Blog', link: '/Blog/' },
       { text: 'JavaScript', link: '/JavaScript/' },
-      { text: 'FirstMeet系列', link: '/FirstMeet/' },
+      { text: 'More', link: '/FirstMeet/' },
       { text: 'CSS', link: '/CSS/' },
       { text: '读书笔记', link: '/ReadingNote/' },
       { text: 'R & T', link: '/GatherAll/' },
     ],
     sidebar: {
+      '/Blog/': genSidebarBlog ('别信'),
       '/JavaScript/': genSidebarJavaScript (),
-      '/FirstMeet/': genSidebarFirstMeet ('Frist-Meet 系列'),
+      '/FirstMeet/': genSidebarFirstMeet (),
       '/CSS/': genSidebarCSS ('层叠样式'),
       '/ReadingNote/': genSidebarNote('读书笔记'),
       '/GatherAll/': genSidebarAll('资源和前端思考')
@@ -37,6 +39,19 @@ module.exports = {
     // lineNumbers: true,
     toc: { includeLevel: [2, 3, 4] }
   }
+}
+
+// Blog
+function genSidebarBlog (title) {
+  return [
+    {
+      title,
+      collapsable: false,
+      children: [
+        'No-More-Vue'
+      ]
+    }
+  ]
 }
 
 //  JavaScript
@@ -116,10 +131,10 @@ function genSidebarJavaScript () {
 }
 
 // First-Meet
-function genSidebarFirstMeet (title) {
+function genSidebarFirstMeet () {
   return [
     {
-      title,
+      title: 'First-Meet Series',
       collapsable: false,
       children: [
         'First-Meet-JSON',
@@ -127,7 +142,15 @@ function genSidebarFirstMeet (title) {
         'First-Meet-Vue-Communication',
         'First-Meet-Flux',
         'First-Meet-TypeScript',
+        'First-Meet-Webpack',
         'First-Meet-JavaScript'
+      ]
+    },
+    {
+      title: 'Type System',
+      collapsable: false,
+      children: [
+        'Type-System-ML'
       ]
     }
   ]
@@ -148,7 +171,8 @@ function genSidebarCSS (title) {
         'Specialty',
         'Two-or-Three-Column',
         'Order-CSS-Properties',
-        'CSS2.2'
+        'CSS2.2',
+        'How-To-Write-CSS'
       ]
     }
   ]
@@ -184,8 +208,7 @@ function genSidebarAll (title) {
         'Free-Book-Resources',
         'Online-Resources',
         'Libraries',
-        'Summarize-Your-Career',
-        'One-Day-One-Puzzle'
+        'Summarize-Your-Career'
       ]
     }
   ]

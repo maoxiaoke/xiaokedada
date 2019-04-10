@@ -16,5 +16,3 @@
 + [周月总结](./Summarize-Your-Career.md)
 
 有点尴尬---
-
-+ [一天一道面试题](./One-Day-One-Puzzle.md)
