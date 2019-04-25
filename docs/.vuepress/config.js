@@ -155,6 +155,13 @@ function genSidebarFirstMeet () {
       ]
     },
     {
+      title: '关于我自己学习的 Webpack',
+      collapsable: false,
+      children: [
+        'Webpack-With-Tool'
+      ]
+    },
+    {
       title: 'Type System',
       collapsable: false,
       children: [
