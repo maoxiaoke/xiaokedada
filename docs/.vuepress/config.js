@@ -139,11 +139,19 @@ function genSidebarFirstMeet () {
       children: [
         'First-Meet-JSON',
         'First-Meet-Cache',
-        'First-Meet-Vue-Communication',
         'First-Meet-Flux',
         'First-Meet-TypeScript',
         'First-Meet-Webpack',
         'First-Meet-JavaScript'
+      ]
+    },
+    {
+      title: 'All About Vue',
+      collapsable: false,
+      children: [
+        'First-Meet-Vue-Communication',
+        'How-To-Write-Vue',
+        'Vuex-And-V-Model'
       ]
     },
     {
