@@ -1,0 +1,679 @@
+{
+  "errors": [],
+  "warnings": [],
+  "version": "4.30.0",
+  "hash": "47db5a99c475c56949ee",
+  "time": 91,
+  "builtAt": 1555925117699,
+  "publicPath": "",
+  "outputPath": "/Users/xiaoke/my-project/puddingjs/dist",
+  "assetsByChunkName": {
+    "index": [
+      "bundle.js",
+      "bundle.js.map"
+    ]
+  },
+  "assets": [
+    {
+      "name": "bundle.js",
+      "size": 6600,
+      "chunks": [
+        "index"
+      ],
+      "chunkNames": [
+        "index"
+      ],
+      "emitted": true
+    },
+    {
+      "name": "bundle.js.map",
+      "size": 4953,
+      "chunks": [
+        "index"
+      ],
+      "chunkNames": [
+        "index"
+      ],
+      "emitted": true
+    }
+  ],
+  "filteredAssets": 0,
+  "entrypoints": {
+    "index": {
+      "chunks": [
+        "index"
+      ],
+      "assets": [
+        "bundle.js",
+        "bundle.js.map"
+      ],
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "namedChunkGroups": {
+    "index": {
+      "chunks": [
+        "index"
+      ],
+      "assets": [
+        "bundle.js",
+        "bundle.js.map"
+      ],
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "chunks": [
+    {
+      "id": "index",
+      "rendered": true,
+      "initial": true,
+      "entry": true,
+      "size": 849,
+      "names": [
+        "index"
+      ],
+      "files": [
+        "bundle.js",
+        "bundle.js.map"
+      ],
+      "hash": "063ab84f9c278fe8de16",
+      "siblings": [],
+      "parents": [],
+      "children": [],
+      "childrenByOrder": {},
+      "modules": [
+        {
+          "id": "./src/index.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+          "name": "./src/index.js",
+          "index": 0,
+          "index2": 3,
+          "size": 375,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            "index"
+          ],
+          "issuer": null,
+          "issuerId": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "profile": {
+            "factory": 25,
+            "building": 10
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [],
+          "reasons": [
+            {
+              "moduleId": null,
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "type": "single entry",
+              "userRequest": "./src/index.js",
+              "loc": "index"
+            }
+          ],
+          "providedExports": [],
+          "optimizationBailout": [],
+          "depth": 0,
+          "source": "// import { join } from 'lodash'\n// import './style.css'\n\n// function component() {\n//   let element = document.createElement('div')\n\n//   element.innerHTML = join(['Hello', 'World'], ' ')\n//   element.classList.add('hello')\n//   debugger\n//   consoe.log('a')\n\n//   return element\n// }\n\n// document.body.appendChild(component())\n\nimport { add } from '../util/math'\n\nadd(3, 6)"
+        },
+        {
+          "id": "./util/is-number.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/util/is-number.js",
+          "name": "./util/is-number.js",
+          "index": 2,
+          "index2": 1,
+          "size": 87,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            "index"
+          ],
+          "issuer": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "issuerId": "./util/math.js",
+          "issuerName": "./util/math.js",
+          "issuerPath": [
+            {
+              "id": "./src/index.js",
+              "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+              "name": "./src/index.js",
+              "profile": {
+                "factory": 25,
+                "building": 10
+              }
+            },
+            {
+              "id": "./util/math.js",
+              "identifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "name": "./util/math.js",
+              "profile": {
+                "factory": 2,
+                "building": 6
+              }
+            }
+          ],
+          "profile": {
+            "factory": 2,
+            "building": 2,
+            "dependencies": 0
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [],
+          "reasons": [
+            {
+              "moduleId": "./util/math.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "module": "./util/math.js",
+              "moduleName": "./util/math.js",
+              "type": "harmony side effect evaluation",
+              "userRequest": "./is-number",
+              "loc": "1:0-38"
+            },
+            {
+              "moduleId": "./util/math.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "module": "./util/math.js",
+              "moduleName": "./util/math.js",
+              "type": "harmony import specifier",
+              "userRequest": "./is-number",
+              "loc": "4:6-14"
+            },
+            {
+              "moduleId": "./util/math.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "module": "./util/math.js",
+              "moduleName": "./util/math.js",
+              "type": "harmony import specifier",
+              "userRequest": "./is-number",
+              "loc": "4:21-29"
+            }
+          ],
+          "providedExports": [
+            "isNumber"
+          ],
+          "optimizationBailout": [],
+          "depth": 2,
+          "source": "import { type } from './type'\nexport const isNumber = value => type(value) === 'Number'"
+        },
+        {
+          "id": "./util/math.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "name": "./util/math.js",
+          "index": 1,
+          "index2": 2,
+          "size": 308,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            "index"
+          ],
+          "issuer": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+          "issuerId": "./src/index.js",
+          "issuerName": "./src/index.js",
+          "issuerPath": [
+            {
+              "id": "./src/index.js",
+              "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+              "name": "./src/index.js",
+              "profile": {
+                "factory": 25,
+                "building": 10
+              }
+            }
+          ],
+          "profile": {
+            "factory": 2,
+            "building": 6
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [],
+          "reasons": [
+            {
+              "moduleId": "./src/index.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+              "module": "./src/index.js",
+              "moduleName": "./src/index.js",
+              "type": "harmony side effect evaluation",
+              "userRequest": "../util/math",
+              "loc": "17:0-34"
+            },
+            {
+              "moduleId": "./src/index.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+              "module": "./src/index.js",
+              "moduleName": "./src/index.js",
+              "type": "harmony import specifier",
+              "userRequest": "../util/math",
+              "loc": "19:0-3"
+            }
+          ],
+          "providedExports": [
+            "add"
+          ],
+          "optimizationBailout": [],
+          "depth": 1,
+          "source": "import { isNumber } from './is-number'\nimport { type } from './type'\nexport const add = function (a, b) {\n  if (isNumber(a) && isNumber(b)) {\n    return a + b\n  }\n  if (type(a) === 'String' || type(b) === 'String') {\n    return parseFloat(a) + parseFloat(b)\n  }\n  return new Error('a or b is not a number')\n}"
+        },
+        {
+          "id": "./util/type.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/util/type.js",
+          "name": "./util/type.js",
+          "index": 3,
+          "index2": 0,
+          "size": 79,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            "index"
+          ],
+          "issuer": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "issuerId": "./util/math.js",
+          "issuerName": "./util/math.js",
+          "issuerPath": [
+            {
+              "id": "./src/index.js",
+              "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+              "name": "./src/index.js",
+              "profile": {
+                "factory": 25,
+                "building": 10
+              }
+            },
+            {
+              "id": "./util/math.js",
+              "identifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "name": "./util/math.js",
+              "profile": {
+                "factory": 2,
+                "building": 6
+              }
+            }
+          ],
+          "profile": {
+            "factory": 2,
+            "building": 2,
+            "dependencies": 0
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [],
+          "reasons": [
+            {
+              "moduleId": "./util/is-number.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/is-number.js",
+              "module": "./util/is-number.js",
+              "moduleName": "./util/is-number.js",
+              "type": "harmony side effect evaluation",
+              "userRequest": "./type",
+              "loc": "1:0-29"
+            },
+            {
+              "moduleId": "./util/is-number.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/is-number.js",
+              "module": "./util/is-number.js",
+              "moduleName": "./util/is-number.js",
+              "type": "harmony import specifier",
+              "userRequest": "./type",
+              "loc": "2:33-37"
+            },
+            {
+              "moduleId": "./util/math.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "module": "./util/math.js",
+              "moduleName": "./util/math.js",
+              "type": "harmony side effect evaluation",
+              "userRequest": "./type",
+              "loc": "2:0-29"
+            },
+            {
+              "moduleId": "./util/math.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "module": "./util/math.js",
+              "moduleName": "./util/math.js",
+              "type": "harmony import specifier",
+              "userRequest": "./type",
+              "loc": "7:6-10"
+            },
+            {
+              "moduleId": "./util/math.js",
+              "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+              "module": "./util/math.js",
+              "moduleName": "./util/math.js",
+              "type": "harmony import specifier",
+              "userRequest": "./type",
+              "loc": "7:30-34"
+            }
+          ],
+          "providedExports": [
+            "type"
+          ],
+          "optimizationBailout": [],
+          "depth": 2,
+          "source": "export const type = value => Object.prototype.toString.call(value).slice(8, -1)"
+        }
+      ],
+      "filteredModules": 0,
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "index",
+          "request": "./src/index.js",
+          "reasons": []
+        }
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "id": "./src/index.js",
+      "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+      "name": "./src/index.js",
+      "index": 0,
+      "index2": 3,
+      "size": 375,
+      "cacheable": true,
+      "built": true,
+      "optional": false,
+      "prefetched": false,
+      "chunks": [
+        "index"
+      ],
+      "issuer": null,
+      "issuerId": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "profile": {
+        "factory": 25,
+        "building": 10
+      },
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "assets": [],
+      "reasons": [
+        {
+          "moduleId": null,
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "type": "single entry",
+          "userRequest": "./src/index.js",
+          "loc": "index"
+        }
+      ],
+      "providedExports": [],
+      "optimizationBailout": [],
+      "depth": 0,
+      "source": "// import { join } from 'lodash'\n// import './style.css'\n\n// function component() {\n//   let element = document.createElement('div')\n\n//   element.innerHTML = join(['Hello', 'World'], ' ')\n//   element.classList.add('hello')\n//   debugger\n//   consoe.log('a')\n\n//   return element\n// }\n\n// document.body.appendChild(component())\n\nimport { add } from '../util/math'\n\nadd(3, 6)"
+    },
+    {
+      "id": "./util/is-number.js",
+      "identifier": "/Users/xiaoke/my-project/puddingjs/util/is-number.js",
+      "name": "./util/is-number.js",
+      "index": 2,
+      "index2": 1,
+      "size": 87,
+      "cacheable": true,
+      "built": true,
+      "optional": false,
+      "prefetched": false,
+      "chunks": [
+        "index"
+      ],
+      "issuer": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+      "issuerId": "./util/math.js",
+      "issuerName": "./util/math.js",
+      "issuerPath": [
+        {
+          "id": "./src/index.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+          "name": "./src/index.js",
+          "profile": {
+            "factory": 25,
+            "building": 10
+          }
+        },
+        {
+          "id": "./util/math.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "name": "./util/math.js",
+          "profile": {
+            "factory": 2,
+            "building": 6
+          }
+        }
+      ],
+      "profile": {
+        "factory": 2,
+        "building": 2,
+        "dependencies": 0
+      },
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "assets": [],
+      "reasons": [
+        {
+          "moduleId": "./util/math.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "module": "./util/math.js",
+          "moduleName": "./util/math.js",
+          "type": "harmony side effect evaluation",
+          "userRequest": "./is-number",
+          "loc": "1:0-38"
+        },
+        {
+          "moduleId": "./util/math.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "module": "./util/math.js",
+          "moduleName": "./util/math.js",
+          "type": "harmony import specifier",
+          "userRequest": "./is-number",
+          "loc": "4:6-14"
+        },
+        {
+          "moduleId": "./util/math.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "module": "./util/math.js",
+          "moduleName": "./util/math.js",
+          "type": "harmony import specifier",
+          "userRequest": "./is-number",
+          "loc": "4:21-29"
+        }
+      ],
+      "providedExports": [
+        "isNumber"
+      ],
+      "optimizationBailout": [],
+      "depth": 2,
+      "source": "import { type } from './type'\nexport const isNumber = value => type(value) === 'Number'"
+    },
+    {
+      "id": "./util/math.js",
+      "identifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+      "name": "./util/math.js",
+      "index": 1,
+      "index2": 2,
+      "size": 308,
+      "cacheable": true,
+      "built": true,
+      "optional": false,
+      "prefetched": false,
+      "chunks": [
+        "index"
+      ],
+      "issuer": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+      "issuerId": "./src/index.js",
+      "issuerName": "./src/index.js",
+      "issuerPath": [
+        {
+          "id": "./src/index.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+          "name": "./src/index.js",
+          "profile": {
+            "factory": 25,
+            "building": 10
+          }
+        }
+      ],
+      "profile": {
+        "factory": 2,
+        "building": 6
+      },
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "assets": [],
+      "reasons": [
+        {
+          "moduleId": "./src/index.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+          "module": "./src/index.js",
+          "moduleName": "./src/index.js",
+          "type": "harmony side effect evaluation",
+          "userRequest": "../util/math",
+          "loc": "17:0-34"
+        },
+        {
+          "moduleId": "./src/index.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+          "module": "./src/index.js",
+          "moduleName": "./src/index.js",
+          "type": "harmony import specifier",
+          "userRequest": "../util/math",
+          "loc": "19:0-3"
+        }
+      ],
+      "providedExports": [
+        "add"
+      ],
+      "optimizationBailout": [],
+      "depth": 1,
+      "source": "import { isNumber } from './is-number'\nimport { type } from './type'\nexport const add = function (a, b) {\n  if (isNumber(a) && isNumber(b)) {\n    return a + b\n  }\n  if (type(a) === 'String' || type(b) === 'String') {\n    return parseFloat(a) + parseFloat(b)\n  }\n  return new Error('a or b is not a number')\n}"
+    },
+    {
+      "id": "./util/type.js",
+      "identifier": "/Users/xiaoke/my-project/puddingjs/util/type.js",
+      "name": "./util/type.js",
+      "index": 3,
+      "index2": 0,
+      "size": 79,
+      "cacheable": true,
+      "built": true,
+      "optional": false,
+      "prefetched": false,
+      "chunks": [
+        "index"
+      ],
+      "issuer": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+      "issuerId": "./util/math.js",
+      "issuerName": "./util/math.js",
+      "issuerPath": [
+        {
+          "id": "./src/index.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/src/index.js",
+          "name": "./src/index.js",
+          "profile": {
+            "factory": 25,
+            "building": 10
+          }
+        },
+        {
+          "id": "./util/math.js",
+          "identifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "name": "./util/math.js",
+          "profile": {
+            "factory": 2,
+            "building": 6
+          }
+        }
+      ],
+      "profile": {
+        "factory": 2,
+        "building": 2,
+        "dependencies": 0
+      },
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "assets": [],
+      "reasons": [
+        {
+          "moduleId": "./util/is-number.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/is-number.js",
+          "module": "./util/is-number.js",
+          "moduleName": "./util/is-number.js",
+          "type": "harmony side effect evaluation",
+          "userRequest": "./type",
+          "loc": "1:0-29"
+        },
+        {
+          "moduleId": "./util/is-number.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/is-number.js",
+          "module": "./util/is-number.js",
+          "moduleName": "./util/is-number.js",
+          "type": "harmony import specifier",
+          "userRequest": "./type",
+          "loc": "2:33-37"
+        },
+        {
+          "moduleId": "./util/math.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "module": "./util/math.js",
+          "moduleName": "./util/math.js",
+          "type": "harmony side effect evaluation",
+          "userRequest": "./type",
+          "loc": "2:0-29"
+        },
+        {
+          "moduleId": "./util/math.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "module": "./util/math.js",
+          "moduleName": "./util/math.js",
+          "type": "harmony import specifier",
+          "userRequest": "./type",
+          "loc": "7:6-10"
+        },
+        {
+          "moduleId": "./util/math.js",
+          "moduleIdentifier": "/Users/xiaoke/my-project/puddingjs/util/math.js",
+          "module": "./util/math.js",
+          "moduleName": "./util/math.js",
+          "type": "harmony import specifier",
+          "userRequest": "./type",
+          "loc": "7:30-34"
+        }
+      ],
+      "providedExports": [
+        "type"
+      ],
+      "optimizationBailout": [],
+      "depth": 2,
+      "source": "export const type = value => Object.prototype.toString.call(value).slice(8, -1)"
+    }
+  ],
+  "filteredModules": 0,
+  "children": []
+}
