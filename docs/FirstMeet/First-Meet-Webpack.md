@@ -10,7 +10,7 @@
 
 ## 名词解释
 
-[terminology](https://webpack.js.org/glossary)
+[Terminology from Webpack](https://webpack.js.org/glossary) or [Glossary from Webpack Book](https://survivejs.com/webpack/appendices/glossary/)。
 
 1. Module
 
@@ -30,7 +30,7 @@ Chunk 更难理解一点，理解为 代码 chunk (一大块代码)。这个 chu
 
 3. Bundle
 
-Bundle 是由一个或多个 chunks 组成的最终结果的输出文件，供浏览器加载。
+Bundle 是由一个或多个 chunks 组成的最终结果的输出文件，供浏览器加载。而且可以有多个 bundle。
 
 ## 开启代码压缩
 

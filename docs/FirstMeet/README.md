@@ -20,6 +20,7 @@
 #### 关于我自己学习的 Webpack
 
 + [Webpack 可视化工具](./Webpack-With-Tool.md)
++ [从打包结果看 webpack 依赖管理](./Webpack-Operating-Principle.md)
 
 #### Type System
 
