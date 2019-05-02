@@ -325,3 +325,166 @@ modules[moduleId].call(module.exports, module, module.exports, __webpack_require
 
 + 在 webpack 中，每个模块只加载一次
 + 只要有一个入口模块，其余模块就能够依次循环导出
+
+打包的结果还挂载了很多属性(诸如 `m`、`c`、`d`...)，这些我们暂时不管，等遇到的时候我们会去解释。
+
+最后，IIFE 返回代码如下：
+
+```js
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
+```
+
+即，加载入口函数，并返回 *导出内容*。
+
+### 入口模块
+
+接下来我们将目光转向入口模块 `./src/index.js`。该模块通过 IIFE 函数中的
+
+```js
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+```
+
+执行。我们看一下函数内部：
+
+```js
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _util_math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/math */ "./util/math.js");
+
+console.log(Object(_util_math__WEBPACK_IMPORTED_MODULE_0__["add"])(3, 6))
+
+/***/ })
+```
+
+在 IIFE 中，我们可以看到参数 `__webpack_exports__` 是一个空的对象 `{}`。执行
+
+```js
+__webpack_require__.r(__webpack_exports__);
+```
+
+#### __webpack_require__.r
+
+会让我们进一步思考 `__webpack_require__.r`。所以我们返回 IIFE 函数寻找 `__webpack_require__.r` 的定义：
+
+```js
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+```
+
+不了解 `Symbol.toStringTag` 这个 [well-know symbol](../JavaScript/ES6-Symbols.md)，可以参考 [Symbol​.toStringTag](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag)。这个函数的作用就是将 `module.exports` 的类型设为 `Module`，并标记它为 `ES Module`。即：
+
+```js
+console.log(module.exports.toString() === '[Object Module]') // true
+```
+
+因此说：
+
+```js
+__webpack_require__.r(__webpack_exports__);
+```
+
+仅为标识作用。
+
+#### another __webpack_require__
+
+接下来我们知道会执行入口模块的内容(开发者所描述的内容)，在 `./src/index.js` 中的代码是：
+
+```js
+import { add } from '../util/math'
+console.log(add(3, 6))
+```
+
+最终被 webpack 解析成：
+
+```js
+/* harmony import */ var _util_math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/math */ "./util/math.js");
+
+console.log(Object(_util_math__WEBPACK_IMPORTED_MODULE_0__["add"])(3, 6))
+```
+
+显然，`_util_math__WEBPACK_IMPORTED_MODULE_0__`(这个变量命名也极有意思) 是 `./util/math.js` 的 *导出内容*，还是使用 `__webpack_require__` 去加载 `./util/math.js` 模块，然后等待加载函数的返回，才能继续处理后面的内容。
+
+**这样，就使得代码能够按照开发者编排的顺序运行下去，而不需要开发者手动去调整运行顺序。**接下来，我们会接着展开这一过程。
+
+#### ./src/index.js 依赖 ./util/math.js 的导出
+
+正如上面看到的，因为 `./src/index.js` 依赖 `./util/math.js` 的 *导出内容*，从而 *暂停* 代码的执行，转而通过 `__webpack_require__` 继续加载 `./util/math.js` 模块。`./util/math.js` 模块在下一节提及。
+
+### 其他模块
+
+`./util/math.js` 模块作为其他模块来研究，代码如下：
+
+```js
+/***/ "./util/math.js":
+/*!**********************!*\
+  !*** ./util/math.js ***!
+  \**********************/
+/*! exports provided: add */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add", function() { return add; });
+/* harmony import */ var _is_number__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./is-number */ "./util/is-number.js");
+/* harmony import */ var _type__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./type */ "./util/type.js");
+
+
+const add = function (a, b) {
+  if (Object(_is_number__WEBPACK_IMPORTED_MODULE_0__["isNumber"])(a) && Object(_is_number__WEBPACK_IMPORTED_MODULE_0__["isNumber"])(b)) {
+    return a + b
+  }
+  if (Object(_type__WEBPACK_IMPORTED_MODULE_1__["type"])(a) === 'String' || Object(_type__WEBPACK_IMPORTED_MODULE_1__["type"])(b) === 'String') {
+    return parseFloat(a) + parseFloat(b)
+  }
+  return new Error('a or b is not a number')
+}
+
+/***/ })
+```
+
+可以看到，编译后的内容跟入口模块 `./src/index.js` 大体一致，只有一个 `__webpack_require__.d` 值得我们特别注意，函数接收 `./util/math.js` 模块的 *导出内容*(目前是空对象 `{}`，`__webpack_require__.r` 为其增加的内容除外)、*导出的函数名* 和 *包裹导出方法的函数*。
+
+#### __webpack_require__.d
+
+返回 IIFE 寻找 `__webpack_require__.d` 的定义。如下：
+
+```js
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+...
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+```
+
+`__webpack_require__.o` 函数也很简单，即判断 导出的内容如 `add` 方法是否已经存在 `module.exports` 这个对象中。则 `__webpack_require__.d` 的作用即为 `module.exports` 挂载一个属性(key 为导出的变量名、函数名、类名等，value 为一个获取导出变量值、函数、类的 getter)。
+
+也就是说，当入口模块 `./src/index.js` 中的加载函数 `__webpack_require__` 返回时，返回结果就包含了 `./util/math.js` 的导出内容。
+
+但是，还不是时候。因为 `./util/math.js` 也依赖了其他模块：
+
+```js
+/* harmony import */ var _is_number__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./is-number */ "./util/is-number.js");
+/* harmony import */ var _type__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./type */ "./util/type.js");
+```
+
+因此，`./util/math.js` 也会因此暂停等待其他模块的加载完成。直至最后一个模块 `./util/type.js` 再无依赖其他模块，再溯源返回结果。
+
+## 图示
+
+![webpack-require](https://github.com/maoxiaoke/xiaokedada/blob/master/assets/webpack-require.png?raw=true)
