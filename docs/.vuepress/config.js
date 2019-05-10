@@ -24,14 +24,16 @@ module.exports = {
       { text: 'More', link: '/FirstMeet/' },
       { text: 'CSS', link: '/CSS/' },
       { text: '读书笔记', link: '/ReadingNote/' },
+      { text: 'Weekly', link: '/Weekly/' },
       { text: 'R & T', link: '/GatherAll/' },
     ],
     sidebar: {
-      '/Blog/': genSidebarBlog ('别信'),
-      '/JavaScript/': genSidebarJavaScript (),
-      '/FirstMeet/': genSidebarFirstMeet (),
-      '/CSS/': genSidebarCSS ('层叠样式'),
+      '/Blog/': genSidebarBlog('别信'),
+      '/JavaScript/': genSidebarJavaScript(),
+      '/FirstMeet/': genSidebarFirstMeet(),
+      '/CSS/': genSidebarCSS('层叠样式'),
       '/ReadingNote/': genSidebarNote('读书笔记'),
+      '/Weekly/': genSidebarWeekly('Weekly'),
       '/GatherAll/': genSidebarAll('资源和前端思考')
     }
   },
@@ -159,7 +161,8 @@ function genSidebarFirstMeet () {
       collapsable: false,
       children: [
         'Webpack-With-Tool',
-        'Webpack-Operating-Principle'
+        'Webpack-Operating-Principle',
+        'Webpack-JavaScript-Module-History'
       ]
     },
     {
@@ -206,6 +209,19 @@ function genSidebarNote (title) {
         'Why-Control-Time',
         'The-Clean-Coder',
         'Real-World-Haskell'
+      ]
+    }
+  ]
+}
+
+// Weekly
+function genSidebarWeekly (title) {
+  return [
+    {
+      title,
+      collapsable: false,
+      children: [
+        '0'
       ]
     }
   ]

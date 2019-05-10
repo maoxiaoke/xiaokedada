@@ -592,6 +592,14 @@ const personPartial: TPersonPartial = {
 }
 ```
 
+举例： 比如用在 JavaScript 的 merge 操作
+
+```js
+const merge = (person: IPerson, patch: Partial<IPerson>) {
+  return { ...person, ...patch }
+}
+```
+
 ### Readonly
 
 定义在源文件 [lib.es5.d](https://github.com/Microsoft/TypeScript/blob/master/src/lib/es5.d.ts) 中：
@@ -687,6 +695,35 @@ type TPerson = Record<'name' | 'age', string>
 const person = {
   name: 'xiaoke',
   age: '18'
+}
+```
+
+举例：在 JavaScript 枚举及其对应的映射
+
+```ts
+type TOperatingCode = 'EDIT' | 'ADD'
+interface IOperatingDesc {
+  name: string;
+  func: () => void;
+}
+
+const operationMap: Record<TOperatingCode, IOperatingDesc> = {
+  EDIT: {
+    name: '编辑',
+    func: edit
+  },
+  ADD: {
+    name: '添加',
+    func: add
+  }
+}
+
+function add() {
+  //
+}
+
+function edit () {
+  //
 }
 ```
 
@@ -966,3 +1003,5 @@ function swap<T, U> (tuple: [T, U]): [U, T] {
 3. [VueJS Typescript with Vuex using Vue-CLI 3](https://github.com/eladcandroid/typescript-vuex-example) 引用 2 的代码实现
 
 4. [代码检查](https://ts.xcatliu.com/engineering/lint.html) Lint 的一些内容
+
+5. [巧用 Typescript (二)](https://zhuanlan.zhihu.com/p/64423022)
