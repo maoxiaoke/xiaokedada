@@ -982,7 +982,7 @@ tsc yourfile.ts
 
 官方提供了 [PlayGround](http://www.typescriptlang.org/play/index.html) 可直接查看编译后的代码。
 
-## Good example
+## Others
 
 ### swap 函数
 
@@ -992,16 +992,67 @@ function swap<T, U> (tuple: [T, U]): [U, T] {
 }
 ```
 
+### TypeScript & Event
+
+在开发 web 应用的时候，我们免不了和原生 Event 对象打交道。比如有一个 Click 事件，可以这样写：
+
+```ts
+handleClick (e: Event) {
+//
+}
+```
+
+但是可以将 Event 具体化，即它到底是 MouseEvent 呢，还是 TouchEvent 或者是 InputEvent。*大多数* 用户行为产生的事件都继承 [UIEvent](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent)，而 UIEvent 又继承于 [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)。因此我们又可以具体化：
+
+```ts
+handleClick (e: MouseEvent) {
+  const index = e.target.getAttribute('data-index') // Object is possibly 'null'
+}
+```
+
+然后，TypeScript 接着告诉你错误。难受。那看一下 `target` 的类型声明吧。在 [lib.dom.d.ts]() 这个文件中有：
+
+```ts
+interface Event {
+  ...
+  readonly target: EventTarget | null;
+  ...
+}
+```
+
+`e.target` 可能会是 `null`。好吧，再查一下 mdn 吧，在 [这里](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)，就是说 `e.target` 不一定是 Element。那我们就守卫一下：
+
+```ts
+handleClick (e: MouseEvent) {
+  const target = e.target
+  if (target instanceof HTMLSpanElement) {
+    ...
+  }
+}
+```
+
+可参考
+
+- [TypeScript and React: Events](https://fettblog.eu/typescript-react/events/)
+
+- [Why is Event.target not Element in Typescript?](https://stackoverflow.com/questions/28900077/why-is-event-target-not-element-in-typescript)
+
+### 使用 type 定义对象和使用 interface 定义的区别
+
+![type-ts](https://github.com/maoxiaoke/xiaokedada/blob/master/assets/type-ts.jpeg?raw=true)
+
+这不用多介绍了，可以查看 [Stack Overflow](https://stackoverflow.com/questions/37233735/typescript-interfaces-vs-types) 的回答。
+
 ## REFERENCE
 
 1. [TypeScript Deep Dive](https://legacy.gitbook.com/book/basarat/typescript/details) 一本比较通俗的 JavaScript
 
 2. [深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/) 上面的中文译本
 
-2. [Vuex and Typescript](https://codeburst.io/vuex-and-typescript-3427ba78cfa8) 将 TypeScript 和 Vuex 结合的文章
+3. [Vuex and Typescript](https://codeburst.io/vuex-and-typescript-3427ba78cfa8) 将 TypeScript 和 Vuex 结合的文章
 
-3. [VueJS Typescript with Vuex using Vue-CLI 3](https://github.com/eladcandroid/typescript-vuex-example) 引用 2 的代码实现
+4. [VueJS Typescript with Vuex using Vue-CLI 3](https://github.com/eladcandroid/typescript-vuex-example) 引用 2 的代码实现
 
-4. [代码检查](https://ts.xcatliu.com/engineering/lint.html) Lint 的一些内容
+5. [代码检查](https://ts.xcatliu.com/engineering/lint.html) Lint 的一些内容
 
-5. [巧用 Typescript (二)](https://zhuanlan.zhihu.com/p/64423022)
+6. [巧用 Typescript (二)](https://zhuanlan.zhihu.com/p/64423022)
