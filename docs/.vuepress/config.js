@@ -50,7 +50,8 @@ function genSidebarBlog (title) {
       title,
       collapsable: false,
       children: [
-        'Creacte-A-Website-01',
+        'Create-A-Website-01',
+        'Create-A-Website-02',
         'No-More-Vue'
       ]
     }
@@ -83,6 +84,13 @@ function genSidebarJavaScript () {
         'ES6-Iterator-And-Iterable',
         'ES6-Async',
         'ES6-Generator'
+      ]
+    },
+    {
+      title: 'Beyond ES6',
+      collapsable: false,
+      children: [
+        'ES-Future-Decorators'
       ]
     },
     {

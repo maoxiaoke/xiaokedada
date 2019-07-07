@@ -82,7 +82,9 @@ class Person {
 
 ## 面向对象编程的理论
 
-什么是 Object Oriented Programming(OOP)？有些人可能会回答：封装(Encapsulation)、继承(Inheritance) 和 多态(Polymorphism)。emmm, that's right. But What does it means?
+什么是 Object Oriented Programming(OOP)？有些人可能会回答：封装(Encapsulation)、继承(Inheritance) 和 多态(Polymorphism)。不过，这句话听上去正确吗？
+
+> 举例来说，封装是将一段逻辑 or 概念进行抽象。然而，这算是非常典型的特点？函数就可以进行抽象和逻辑封装。封装是我们长久以来在做的事，而不是 OOP 所独有的；继承也不一定是 OOP 所需要的，继承想表达的概念是 is-a 的关系，但这里面的实际问题是什么呢？是我们想复用父类的代码。既然目的是复用逻辑，就不一定需要继承，因为也可以表达成一种联系(比如 JavaScript)；多态和 OOP 也没有必然的联系，
 
 Class 描述了一种代码的组织方式，是软件对真实世界的一种建模，即 **对象以及操作对象的行为组装在一起**<sup>1</sup>。意思是说，OOP 关注的是对象(数据)的一系列操作<sup>2</sup>，而非逻辑。
 
