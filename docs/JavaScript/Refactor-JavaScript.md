@@ -460,7 +460,7 @@ function rateStatus (level) {
 
 会遇到很多情况，需要 `if` 判断中加入多个判断条件。可以将多个判断条件封装起来 - 尤其是拥有超过 2 个判断条件的情况。
 
-```js
+​```js
 // 反例
 import { isEmpty } from 'lodash'
 if (order.state === 'CANCEL' && !isEmpty(unprocessedOrderList)) {
@@ -679,7 +679,7 @@ function printOrder () {
 }
 ```
 
-## Promise 的 then 链总该返回什么
+### Promise 的 then 链总该返回什么
 
 Promise 的 then 链如果没有返回 Promise、一般值或者 thenable 的话，会将 `undefined` 作为 resolved 值返回(假设没有任何 catch 捕获到错误)。当排查问题的时候，这样的错误会极难发现。
 
@@ -687,7 +687,7 @@ TODO:
 
 - [ ] Add example
 
-## 不要“吞掉” Error
+### 不要“吞掉” Error
 
 「Promise 链的最后总以一个 `catch()` 结束」是一个最佳实践。但设计一个基于 Promise 的函数时，应该考虑的是让函数自己进行差错控制处理呢，还是抛错。绝不要“吞掉”错误。
 
@@ -732,9 +732,39 @@ function printOrderByTpl (printers) {
 
 我认为这两种表达并不一致：当设计一个基于 Promise 的函数时，提供的信任方案是向外显式 `resolve` 或 `reject`。若认为向外 “throw error” 也是提供一个 `reject`，那实际上就是与 Promise 的设计思想背道而驰；另外，"错误" 是普遍的，很多情况下都无法确定 “错误” 的来源，而 `reject` 是确定的。
 
-## 基于 Promise 的函数不应当 throw 异常
+### 基于 Promise 的函数不应当 throw 异常
 
-http://2ality.com/2016/03/promise-rejections-vs-exceptions.html
+从描述数据生产者和数据消费者的角度，Promise 是一种 [Push 协议](https://rxjs.dev/guide/observable)，也就是说 Promise 来决定何时向 “回调” push 数据。
+
+如果在 Promise 中 throw 异常，这种设计就被打破了，Promise 部分变成 Pull 协议，Promise 不知道什么时候这个异常会被传递给消费者。
+
+```js
+// 反例
+function printOrder () {
+  return promiseA ()
+    .then(() => {
+      ... // Do something
+    })
+    .catch(e => {
+      throw e
+    })
+}
+
+// 正例
+function printOrder () {
+  return promiseA ()
+    .then(() => {
+      ... // Do something
+    })
+    .catch(e => {
+      Promise.reject(e)
+    })
+}
+```
+
+> http://2ality.com/2016/03/promise-rejections-vs-exceptions.html
+
+这显然不是好的
 
 🍊 <span style="font-size: 18px;font-weight: 700">差错控制</span>
 

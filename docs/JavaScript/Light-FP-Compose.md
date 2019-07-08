@@ -31,9 +31,6 @@ const exclaim = x => x + '!'
 const toUpperCase = x => x.toUpperCase()
 ```
 
-
-
-
 ## 实现 Id
 
 `id` 是一个实用的函数。即，这个函数接受什么输入然后原封不动地返回这个输入。实现非常简单：
@@ -60,4 +57,6 @@ compose(id, f) == compose(f, id) = f
 compose(h, compose(g,f)) == compose(compose(h,g), f)
 ```
 
-## 管道
+## 管道(Pipeline)
+
+> 在 Unix-like 操作系统中，管道是通过消息传递实现 inter-process communication 的一种机制。通过 “链式模型” 来串接不同的程序或不同的组件。[Pipeline (Unix)](https://en.wikipedia.org/wiki/Pipeline_(Unix))
