@@ -738,6 +738,8 @@ function printOrderByTpl (printers) {
 
 如果在 Promise 中 throw 异常，这种设计就被打破了，Promise 部分变成 Pull 协议，Promise 不知道什么时候这个异常会被传递给消费者。
 
+换句话说，`throw `是一种 **同步** 行为，而应该使用 `reject` 来保持 **异步** 一致性。
+
 ```js
 // 反例
 function printOrder () {
@@ -750,7 +752,7 @@ function printOrder () {
     })
 }
 
-// 正例
+// 正例 - 不是那么正
 function printOrder () {
   return promiseA ()
     .then(() => {
@@ -760,11 +762,19 @@ function printOrder () {
       Promise.reject(e)
     })
 }
+// 我觉得比较好的写法
+function printOrder () {
+  return new Promise((reslove, reject) => {
+    promiseA()
+    	.then(resolve)
+    	.catch(reject)
+  })
+}
 ```
 
 > http://2ality.com/2016/03/promise-rejections-vs-exceptions.html
 
-这显然不是好的
+<del>这显然不是好的</del>
 
 🍊 <span style="font-size: 18px;font-weight: 700">差错控制</span>
 

@@ -318,6 +318,26 @@ $ npm install --save-dev @typescript-eslint/eslint-plugin @typescript-eslint/par
 
 TSLint extension 安装即可使用。
 
+
+
+###  处理 .svg .sass 文件
+
+正如 [wepback](https://webpack.js.org/guides/typescript/#importing-other-assets) 中提到的，对于非代码的资源，比如 svg 文件、style 文件等，需要有额外声明，比如
+
+```typescript
+declare module '*.svg' {
+  const content: any
+  export default content
+}
+
+declare module '*.sass' {
+  const content: {[className: string]: string}
+  export = content
+}
+```
+
+
+
 ## standardJS 规范
 
 个人是比较喜欢 [standardJS](https://standardjs.com/)，尤其是无分好的写法。因此会在项目中引入 standardJS 规范。步骤如下：

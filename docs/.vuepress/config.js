@@ -52,7 +52,8 @@ function genSidebarBlog () {
       children: [
         'Create-A-Website-01',
         'Create-A-Website-02',
-        'No-More-Vue'
+        'No-More-Vue',
+        'What-I-Wanna-Be'
       ]
     },
     {
@@ -114,6 +115,8 @@ function genSidebarJavaScript () {
       collapsable: false,
       children: [
         'Light-FP-Overview',
+        'Light-FP-Functions',
+        'Light-FP-Curring',
         'Light-FP-Categries',
         'Light-FP-Compose',
         'Light-FP-Container-And-Functor'
@@ -169,7 +172,8 @@ function genSidebarFirstMeet () {
         'First-Meet-Flux',
         'First-Meet-TypeScript',
         'First-Meet-Webpack',
-        'First-Meet-JavaScript'
+        'First-Meet-JavaScript',
+        'First-Meet-NestJS'
       ]
     },
     {
