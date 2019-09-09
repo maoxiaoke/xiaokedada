@@ -12,6 +12,8 @@
 
 [Exploring ReasonML and functional programming](http://reasonmlhub.com/exploring-reasonml/)
 
+[High Performance Browser Networking]([https://hpbn.co](https://hpbn.co/))
+
 ## 前端框架
 
 [React-in-Patterns](https://github.com/krasimir/react-in-patterns)

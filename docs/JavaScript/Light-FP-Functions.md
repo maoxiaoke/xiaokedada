@@ -1,13 +1,29 @@
-# 函数
+# 函数基础
 
-在编程领域中，函数的作用举足轻重。[Michael Fogus](http://blog.fogus.me/) 在 [Functional JavaScript](https://www.amazon.com/Functional-JavaScript-Introducing-Programming-Underscore-js/dp/1449360726/?tag=fogus-20) 描述了函数在 FP 领域的重要性：
+## 抽象 和 组合 (Abstration & Composition)
 
-1. 以函数为抽象单元
-2. 以函数为行为单元
+在编程领域中，函数的作用举足轻重。[Michael Fogus](http://blog.fogus.me/) 在 [Functional JavaScript](https://www.amazon.com/Functional-JavaScript-Introducing-Programming-Underscore-js/dp/1449360726/?tag=fogus-20) 描述了函数在 FP 领域的两个重要性：
 
-函数是实现抽象的一个方式：**隐藏了实现细节**。这似乎是函数固有的一种属性（天然的本份），毋庸置疑。
+1. 以函数为抽象单元 (抽象)
+2. 以函数为行为单元 (组合)
 
-有了函数之后，函数与函数之间的调用可以构建起整个软件工程。从某个角度来说，**函数并不特殊**，如果可以像对待其他数据类型一样对待函数 —  当做参数传递，当做函数返回值返回，又或者赋值给其他变量… ，这样才能发挥函数作为行为单元的真正威力。
+在介绍章节 [理解编程]() 中其实谈到由于我们大脑的缺陷，在处理问题时，会逻辑性地将信息进行结构化地分解并重新组合。也就是分解成小问题，再组合起来解决大问题。而我们将实现细节分解到小问题的这种行为，便是一种 **抽象行为**(Abstration Behavior)。
+
+> The essence of abstractions is preserving information that is relevant in a given context, and forgetting information that is irrelevant in that context. -- John V. Guttag
+
+**抽象行为** 是通过忽略某一问题具体实现细节，归纳这一类问题的共同特征或属性的过程。<del>Generalization，一般化</del>
+
+抽象在软件世界无处不在。在 JavaScript 中，主要体现在以下结构中：
+
++ 算法
++ 数据结构
++ 模块
++ 类
++ 函数
+
+<del>函数是实现抽象的一个方式：**隐藏了实现细节**。这似乎是函数固有的一种属性（天然的本份），毋庸置疑。
+
+有了函数之后，函数与函数之间的调用可以构建起整个软件工程。从某个角度来说，**函数并不特殊**，如果可以像对待其他数据类型一样对待函数 —  当做参数传递，当做函数返回值返回，又或者赋值给其他变量… ，这样才能发挥函数作为行为单元的真正威力。</del>
 
 <del>如果一个函数可以当做参数传递、又或者作为返回值返回，就称为 “高阶函数”（Higher-Order Function）</del>。
 
@@ -40,6 +56,8 @@ const wrappedSayHi = sayHi
 1. 是 “一等公民”
 2. 以函数作为参数
 3. 或者返回函数
+
+> 我们应该从函数的 “一等公民” 的角度来理解高阶函数，即相对于 First-Order 函数 - 无法接收函数作为参数，也无法返回函数，亦不能将函数赋值给变量。从 “阶” 的角度来理解的高阶函数是片面的，比如将 `Foo(1)(2)` 才理解为高阶函数。
 
 ### 以函数作为参数
 
@@ -95,9 +113,30 @@ repeat(4, always('oops'))
 
 #### 闭包
 
-##  纯函数 和 幂等性
+##  纯函数
 
-纯函数（Pure Function）有以下 “优良品质”：
+### 代数中的函数
+
+在编程的真实中，函数内部会处理一些行为操作，或执行一系列步骤，或转换 IO 数据。
+
+不过首先，让我们考虑一下代数中函数的行为。按照 G. Cantor 的想法，由一些确定的且相互区别的对象(Object)汇集而组成的一个整体，称为集合。组成该集合的对象称为它的元素，描述为 `𝑎 ∈ A`，其中 `𝑎` 是集合 `A` 中的元素。
+
+集合间的关系可以描述为：
+
+<p style="text-align: center">𝑓 : A → B</p>
+
+`𝑓` 表示集合 A 到集合 B 的函数。
+
+举例： 𝑓(x) = 2x (x ∈ R)，则表示实数集到实数集的一个映射关系。即对于实数集的任意元素 x，存在函数关系 𝑓 将其映射到另一实数集的元素。
+
+我们可以观察到以下特征：
+
+1. 函数是输入 x 到输出 𝑓(x) 的一个 mapping 关系。
+2. 对于任意一个输入 x, 可以完全用输出 𝑓(x) 完全替代，这称为 Referential Transparency。
+
+### 纯函数的 Mapping 关系
+
+纯函数（Pure Function）和代数学中的函数行为一致。纯函数有以下 “优良品质”：
 
 1. 函数结果 **只** 依赖函数参数
 2. **无法** 改变外部世界状态
@@ -142,3 +181,11 @@ TODO:
 #### 并行
 
 并行遇到 FP，就像 “鱼儿遇见水”。
+
+#### 易于重构
+
+如果在一个函数依赖众多的外部变量，我相信这个函数会像 “shit” 一样让你不想去碰它。但纯函数不一样，由于它只依赖传给它的函数参数，你会更加大胆、有自信地重构或重新组织它内部的代码。
+
+## Reference
+
+[1] Guttag, John V. (18 January 2013). Introduction to Computation and Programming Using Python (Spring 2013 ed.). Cambridge, Massachusetts: The MIT Press. ISBN 9780262519632.

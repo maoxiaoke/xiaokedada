@@ -52,6 +52,7 @@ function genSidebarBlog () {
       children: [
         'Create-A-Website-01',
         'Create-A-Website-02',
+        'Library-From-Begin-To-End',
         'No-More-Vue',
         'What-I-Wanna-Be'
       ]

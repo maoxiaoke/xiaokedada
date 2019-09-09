@@ -824,6 +824,8 @@ https://www.cnblogs.com/pangjianxin/p/7928083.html
 
 ## KISS
 
+这个法则简单且粗暴：Keep It Simple, Stupid.
+
 ## Inversion of control - 控制反转
 
 ## loose coupling high cohesion - 高耦合低内聚
