@@ -95,9 +95,7 @@ repeat(4, () => 'oops')
 
 ### 以函数作为返回值
 
-返回一个常数的函数是常见的，也是非常有用的，几乎成了
-
-函数式编程的一种模式。
+返回一个常数的函数是常见的，也是非常有用的，几乎成了函数式编程的一种模式。
 
 ```typescript
 const always: <T> (value: T) => () => T  = (value) => () => value
@@ -108,8 +106,6 @@ const always: <T> (value: T) => () => T  = (value) => () => value
 ```typescript
 repeat(4, always('oops'))
 ```
-
-
 
 #### 闭包
 
@@ -168,24 +164,171 @@ function areaOfCircle (radius: number): number {
 
 这个例子足够简单，“不纯” 相比 “纯” 危害似乎没有很严重。但是我必须在此申明，**这种依赖状态是影响系统复杂度的祸首**。接下来，会告诉你 FP 追求 “纯” 函数是值得的。
 
-###  “纯” 的理由
+###  为何追求 “纯”
 
 #### 可测试性
 
 由于 “纯” 函数式 “无副作用” 的，它的执行结果就是返回值，影响返回值的唯一因素就是函数参数。对于单元测试的程序员来说，这简直就是福音呀：在测试函数的时候，只需关心参数的一些边界值就行，也不必关系函数的调用顺序，不用费心设置函数依赖的一些外部值。
 
-#### 容易调试
-
-TODO:
-
 #### 并行
 
-并行遇到 FP，就像 “鱼儿遇见水”。
+并行遇到函数式编程，就像 “鱼儿遇见水”。并行编程是函数式编程发挥其最大实力的领域。因为在函数式编程中，所有的函数都是纯函数，不需要访问共享的内存，也不会因为副作用而进入竞争态(Race Condition)。
 
 #### 易于重构
 
 如果在一个函数依赖众多的外部变量，我相信这个函数会像 “shit” 一样让你不想去碰它。但纯函数不一样，由于它只依赖传给它的函数参数，你会更加大胆、有自信地重构或重新组织它内部的代码。
 
+另一个减轻重构难度的优势在于纯函数的 *引用透明性*，只要保证相同的输入输出，就可以完全用另一个想等的函数或函数结果替换它，而不改变整个的程序的行为。
+
 ## Reference
 
 [1] Guttag, John V. (18 January 2013). Introduction to Computation and Programming Using Python (Spring 2013 ed.). Cambridge, Massachusetts: The MIT Press. ISBN 9780262519632.
+
+## Ramda 和 函数
+
+在函数式编程中，函数是第一要义。从命令式到声明式的跨越，意味着从告诉电脑 「How To Do」到「What I Want」的转变。而这一秘诀，是因为 “函数” 抽象了行为，因此我们可以不去了解其内部到底做了什么，只需要知道其为我们提供了什么能力，并且保证自己是 “纯” 的。
+
+举例来说，算术运算。在函数式编程的世界中，一般不会直接去操纵 `+`、`-`、`*` 和 `/` 这四个算术符号，是因为直接操纵太过死板了。在 Ramda 中，有 `add`、`subtract`、`multiply` 和 `divide` 相对应的函数提供调用。比较下面的代码：
+
+```ts
+const evenNumber = [2, 4, 6]
+const oddNumber = [1, 3, 5]
+
+map(number => 2 + number)(evenNumber)
+map(number => 2 + number)(oddNumber)
+
+const calcTwo = add(2)
+map(calcTwo)(evenNumber)
+map(calcTwo)(oddNumber)
+```
+
+是的，函数复用。相比于重新创建一个匿名的 `number => 2 + number` 函数，我们的函数版本复用了 `calcTwo` 这个函数。此外，在[函数组合](./Light-FP-Compose.md)中，函数版本的 `add` 比 `+` 有更大的优势。
+
+在上面的例子中，我们用到了进行了[柯里化](./Light-FP-Currying.md)版本的 `map` 函数，不过介绍柯里化并不是这一节的重点，我们会在后面提到它。
+
+总而言之，请记住这句话：**函数贯穿始终**。
+
+#### 算术 (Math)
+
+1. `add` 对应于 `+` 运算
+2. `subtract` 对应于 `-` 运算
+3. `multiply` 对应于 `*` 运算
+4. `divide` 对应于 `/` 运算
+
+此外，Ramda 还提供取模运算 `mathMod`、平均数 `meanMath`、取负 `meanMath` 等辅助函数。简单地，我们来做一个 `(2 * 3 + 1)^2` 简单算术。
+
+```ts
+const square = x => x * x
+
+const doArithmetic = compose(
+  square,
+  add(1),
+  multiply
+)
+
+doArithmetic(2, 3)
+```
+
+5. 由于 `add(1)` 和 `subtract(1)` 是一个常见的操作，因此 Ramda 提供了 `inc` 和 `dec` 函数与其对应。
+
+#### 逻辑 (Logic)
+
+1. `both` 和 `either` 可以接收两个函数作为参数，替代运算符 `&&` 和 `||`
+2. `complement` 可以接收一个函数作为参数，替代运算符 `!`
+
+举例，若在某国可以驾驶的年龄段的是 [18, 60)，那么他的年龄必须大于或等于 18，小于 60。
+
+```ts
+const isOver18 = gte(__, 18)
+const isOldEnough = lt(__, 60)
+
+const canDrive = both(isOver18, isOldEnough)
+canDrive(16) // false
+canDrive(20) // true
+```
+
+3. 此外，原始值(Primitive Value)的比较，分别有 `add`、`or`、`not` 分别对应。
+4. 一个常见 JavaScript 写法中，`||` 可用于取默认值，`&&` 可用于进行短路运算。Ramda 提供 `defaultTo` 来提供默认值的行为，并且规避 *为 0 时的异常行为*。
+
+```ts
+const defaultAge = defaultTo(18)
+defaultAge(0) // 18
+defaultAge(undefined) // 18
+```
+
+5. `&&` 提供的短路运算不过是简化了 `if...else`，同样对于 *条件判断*(Conditionals) 的函数行为，Ramda 提供 `ifElse` 来对应。该函数可以接收三个参数，分别是判断条件、判断为真的操作和判断为假的操作。举例来说，我们可爱的女孩们是“永葆青春”的。
+
+```ts
+const forever18 = ifElse(gte(__, 18), always(18), inc)
+forever18(20) // 18
+forever18(12) // 13
+```
+
+有点理解上的困难？让我们翻译成常规的三元运算符 `?...:...` 的写法：
+
+```ts
+const forever18 = age => age >= 18 ? 18 : age + 1
+```
+
+含义就是，判断女孩的年龄是否大于等于(Ramda 提供 `gte` 函数) 18 岁，判断为真，“永葆年轻”；判断为假，年龄则往上递增一岁。还记得上面的 `inc` 函数吗，我们用它抽象了 `+1` 这个行为。
+
+嗯... 总结一下，在 Ramda 中，`if...else`、`?...:...` 和 `&&` 短路用法都使用 `ifElse` 函数来提供。
+
+6. 当然，Ramda 也为 `if...else if...else...` 和 `switch` 提供 `cond` 这个函数来支持。该函数接收形如 `[predicate, transformer]` 的数组。命中数组中某项的 predicate(即返回 true)，则使用对应的 transformer 进行处理；没有任何命中，返回 undefined。
+
+```ts
+const fn = R.cond([
+  [R.equals(0),   R.always('water freezes at 0°C')],
+  [R.equals(100), R.always('water boils at 100°C')],
+  [R.T,           temp => 'nothing special happens at ' + temp + '°C']
+]);
+fn(0); //=> 'water freezes at 0°C'
+fn(50); //=> 'nothing special happens at 50°C'
+fn(100); //=> 'water boils at 100°C'
+```
+
+#### 常量 (Constants)
+
+同样，表达常量的这一概念也可以通过函数来抽象。我们在上面也提到了，即 `always` 函数。`always` 的实现也非常简单，即函数返回输入本身。
+
+```ts
+const always = () => value
+```
+
+`always` 非常常见，几乎成了函数式编程固定的一种模式。
+
+#### Identity
+
+在 [范畴学基础理论](./Light-FP-Categries.md) 一节中提到过[单位函数]() 这一概念。这是一个极为重要的概念，我们在 [函数组合](./Light-FP-Compose.md) 中也会再次介绍它。它的实现也非常简单：
+
+```ts
+const identity = id => id
+```
+
+这是一个在编程领域和很常见的概念，*返回参数本身*。比如，在页面展示一段简介文字时，可能由于字数太长，我们可能需要对字符串进行截断，使得页面不那么难看。那么，这里的逻辑是：如果字符串大于或等于某一长度，则进行截断；否则，返回字符串本身。在 [Logic](#逻辑 (Logic)) 中提到过 `ifElse` 这个函数，我们可以使用它来达到我们的目的。
+
+```ts
+const truncate = ifElse(propSatisfies(gte(__, 10), 'length'), pipe(take(10), append('...'), join('')), identity)
+
+truncate('xiaoke')  // 'xiaoke'
+```
+
+这是一种非常普遍的场景，因此 Ramda 就提供了 `when` 和 `unless` 来简化上面的式子。
+
+```ts
+const when = ifElse(propSatisfies(gte(__, 10), 'length'), pipe(take(10), append('...'), join('')))
+
+truncate('xiaoke')  // 'xiaoke'
+```
+
+到此，想必很多同学对于上面的例子感到无所适从。是的，处于提供最完整的函数式的例子，在这里我引入了很多其他的内容。
+
+比如我介绍:
+
+> `both` 和 `either` 可以接收两个函数作为参数...
+
+我用了「可以」这个词，是因为在 Ramda 中，函数都是柯里化的。而对于柯里化的概念，会在 [Currying 和 Partial Complicative](./Light-FP-Currying-And-Patial-Complicative.md) 介绍；placeholder `__` 也会在柯里化一节介绍；`pipe` 的概念，会在 [函数组合](./Light-FP-Compose.md) 介绍；同时细心的你可能发现，我们举出的例子只有在真正需要它的时候才会将数据传入，这便是 point-free 和 data-last style，你同样可以在后面的章节发现这些概念的踪影。
+
+你不必先去学习这些概念，因为在这里，我想强调的是在函数式编程的世界中，“函数贯穿始终”。相比于命令式编程，函数式编程更习惯将行为抽象出来。于是围绕着函数，我们又引入了高阶函数、纯函数等概念。
+
+<!-- 下两个章节，我们会学习函数组合和柯里化。在学过这些内容之后，我们需要再回过头来 -->

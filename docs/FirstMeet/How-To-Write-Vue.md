@@ -8,7 +8,7 @@
 
 ## vue 项目中跳转到外部链接
 
-采用 *锚* 这种标签当然是可以完成这一目的的。不过，也可以使用 `window.location.href` 来解决。
+采用 *锚* 这种标签当然是可以完成这一目的的。不过，也可以使用 `window.href` 来解决。
 
 ```html
 <span @click="routerToLinks(link)">text</span>
@@ -88,10 +88,24 @@ Vue 可以监听到的数组原生方法：`splice()`、`push()`、`shift()`、`
 </script>
 
 <!-- parent.vue -->
-<child @uploaded="handleUpload(argFromParent)"></child>
+<child @uploaded="handleUpload(arguments,argFromParent)"></child>
 <script>
   ...
-  handleUpload (arguments, argFromParent) {
+  handleUpload (arg, argFromParent) {
+    ...
+  }
+  ...
+</script>
+```
+
+这里利用了原生的 `arguments`。更好的方式可能是下面的：
+
+```html
+<!-- parent.vue -->
+<child @uploaded="value => handleUpload(value, argFromParent)"></child>
+<script>
+  ...
+  handleUpload (val, argFromParent) {
     ...
   }
   ...
