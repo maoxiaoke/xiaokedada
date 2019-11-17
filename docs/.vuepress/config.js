@@ -21,6 +21,7 @@ module.exports = {
     nav: [
       { text: 'Blog', link: '/Blog/' },
       { text: 'JavaScript', link: '/JavaScript/' },
+      { text: 'React', link: '/React/' },
       { text: 'More', link: '/FirstMeet/' },
       { text: 'CSS', link: '/CSS/' },
       { text: '读书笔记', link: '/ReadingNote/' },
@@ -30,6 +31,7 @@ module.exports = {
     sidebar: {
       '/Blog/': genSidebarBlog(),
       '/JavaScript/': genSidebarJavaScript(),
+      '/React/': genSidebarReact('React'),
       '/FirstMeet/': genSidebarFirstMeet(),
       '/CSS/': genSidebarCSS('层叠样式'),
       '/ReadingNote/': genSidebarNote('读书笔记'),
@@ -156,6 +158,19 @@ function genSidebarJavaScript () {
         'I-Dont-Know-JavaScript',
         'Refactor-JavaScript',
         'JavaScript-Design-Pattern'
+      ]
+    }
+  ]
+}
+
+function genSidebarReact (title) {
+  return [
+    {
+      title,
+      collapsable: false,
+      children: [
+        'First-Meet-React',
+        'React-Hook',
       ]
     }
   ]

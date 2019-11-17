@@ -772,7 +772,7 @@ tsconfig.json 文件指定用来编译这个项目的根文件和编译选项。
 
 ## Recap
 
-### 简单类型的写法
+### 简单类型的写法
 
 ```ts
 const a: String = 'xiaoke'
@@ -1042,6 +1042,65 @@ handleClick (e: MouseEvent) {
 ![type-ts](https://github.com/maoxiaoke/xiaokedada/blob/master/assets/type-ts.jpeg?raw=true)
 
 这不用多介绍了，可以查看 [Stack Overflow](https://stackoverflow.com/questions/37233735/typescript-interfaces-vs-types) 的回答。
+
+### 只声明一个泛型
+
+在实际开发中，会遇到这样的一个例子：可以为类型传递多个泛型，但是其中某些泛型是可以通过类型推断出来的。举例
+
+```ts
+export async function tryCatch<T, R, S>(
+  service: (args:R) => Promise<T>,
+  args: R,
+): Promise<[T, S]> {
+  try {
+    return [await service(args), null];
+  } catch (e) {
+    return [null, e];
+  }
+}
+```
+
+假设其中 T 和 R 的类型都可以推断出来，而 R 并不能。也无法提供一个可选的 Optional 泛型。目前的解决方法是通过 curry 的方式。
+
+```tsx
+export function tryCatch<S>() {
+  return async <T, R> (service: (args: R) => Promise<T>, args: R): Promise<[T, S]> => {
+    try {
+      return [await service(args), null];
+    } catch (e) {
+      return [null, e];
+    }
+  };
+}
+```
+
+其他参考链接：
+
+1. [Inferred type in generic with multiple type parameters](https://stackoverflow.com/questions/47596157/inferred-type-in-generic-with-multiple-type-parameters)
+2. [Optional Generic Type Inference](https://github.com/Microsoft/TypeScript/issues/14400)
+3. [Allow specifying only a subset of generic type parameters explicitly instead of all vs none](https://github.com/microsoft/TypeScript/issues/16597)
+
+### 没有内置 Nullable 类型
+
+TypeScript 官方提供了一个 `NonNullable` 类型，但是并没有提供一个 `Nullable` 类型。这里简要实现下：
+
+```ts
+type Nullable<T> = T | null;
+```
+
+关于为什么不提供 `Nullable` 类型，大概有几点理由：
+
+1. 如何定义 `Nullable`？是 `T | null` or `T | undefined` or `T | null | undefined`。
+
+既然存在争议，不如交给开发者来实现。
+
+还有 issue 提出 `T?` 这种方式，也是比较奇怪的设计。
+
+参考链接：
+
+1. [[Request for feedback] Nullable types, `null` and `undefined`(https://github.com/microsoft/TypeScript/issues/7426)
+2. [Non-nullable types ](https://github.com/microsoft/TypeScript/pull/7140)
+
 
 ## REFERENCE
 
