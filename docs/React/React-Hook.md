@@ -12,7 +12,29 @@
    + Some pattern of class is more difficult to optimize
    + Convert funcitonal components to class components is confusing.
 
-组件逻辑复用的困局
+## 函数组件的优点
+
+1. Hooks 是比 HOC 和 Render Props 更优雅的复用方式。
+
+2. Hooks 的「心智模型」更「声明式」(Declarative)
+
+Hooks api 提供更声明式的状态管理、处理副作用的操作。比如 useEffect，可以将以前需要在生命周期中手动处理副作用(命令式，Imperative)的行为转换成使用 useEffect 处理副作用和副作用依赖。
+
+3. 为未来的 Concurrent Mode 和 Suspense 特性提供更多的可能
+
+Concurrent Mode 让 React 可以并发渲染「多个版本」的组件树。函数组件通过「闭包」特性为 Concurrent Mode 提供了更多的可能性。
+
+> refer
+
+1. [为什么 React 现在要推行函数式组件](https://www.zhihu.com/question/343314784)
+
+2. [How Are Function Components Different from Classes?](https://overreacted.io/how-are-function-components-different-from-classes/)
+
+## Metal Rule of Hooks 和 Functional Component
+
+1. Hooks 提供「状态逻辑」的可复用，而非「状态」。
+
+2. 函数组件保持了「状态」和 「视图」的一致型。
 
 用函数组件来替代 Class 组件，那么之前的函数组件有哪些功能是缺乏的呢？
 
@@ -786,7 +808,7 @@ function onUpdateRef(initialValue) {
 }
 ```
 
-提供一个 current 用来保存任何值，真的是方便得很呢。
+<!-- 提供一个 current 用来保存任何值，真的是方便得很呢。 -->
 
 + TODO: 使用场景
 + 输入输出

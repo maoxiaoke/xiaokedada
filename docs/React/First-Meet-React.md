@@ -268,7 +268,6 @@ export default class Count extends React.Component<Props, {}> {
     )
   }
 }
-
 ```
 
 #### Cons Of Context
